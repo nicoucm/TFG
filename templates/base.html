@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Plataforma universitaria{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <h1>Plataforma comunitaria universitaria</h1>
+
+    <nav>
+        <a href="{{ url_for('home') }}">Inicio</a> |
+        <a href="{{ url_for('subjects') }}">Asignaturas</a> |
+        <a href="{{ url_for('materials') }}">Materiales</a> |
+        <a href="{{ url_for('incidents') }}">Incidencias</a> |
+        <a href="{{ url_for('activities') }}">Actividades</a> |
+        <a href="{{ url_for('ads') }}">Anuncios</a> |
+        <a href="{{ url_for('accessible_mode') }}">Modo accesible</a>
+    </nav>
+
+    <div style="margin-top: 10px;">
+        {% if current_user.is_authenticated %}
+            <strong>Conectado como:</strong>
+            {{ current_user.name }} ({{ current_user.role }})
+            |
+            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Iniciar sesión</a> |
+            <a href="{{ url_for('register') }}">Registrarse</a>
+        {% endif %}
+    </div>
+
+    <hr>
+</header>
+
+<!-- Mensajes flash (éxito, error, etc.) -->
+<section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li><strong>{{ category|capitalize }}:</strong> {{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</section>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>
