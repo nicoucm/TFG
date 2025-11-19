@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Inicio{% endblock %}
-
 {% block content %}
-<h2>Bienvenido a la plataforma comunitaria universitaria</h2>
 
-<p>
-    Esta aplicación web está diseñada para mejorar la experiencia universitaria
-    mediante un entorno colaborativo, accesible e inclusivo.
+<h2>Bienvenido a UniTogether, tu plataforma comunitaria universitaria de confianza</h2>
+<h2>¡Tu espacio universitario en un solo lugar!</h2>
+<p style="text-align:center; font-size:1.2rem;">
+    Nos aseguramos de ofrecerte la mejor experiencia universitaria mediante un entorno colaborativo, accesible e inclusivo.
 </p>
 
-<ul>
+<ul style="max-width:700px; margin:2rem auto; font-size:1.2rem;">
     <li><strong>Asignaturas:</strong> criterios de evaluación, dificultad percibida y recursos de estudio.</li>
     <li><strong>Materiales académicos:</strong> intercambio de apuntes y documentos entre estudiantes.</li>
     <li><strong>Portal de incidencias:</strong> canal de comunicación para reportar situaciones de conflicto o discriminación.</li>
@@ -18,11 +16,4 @@
     <li><strong>Anuncios formativos:</strong> clases particulares y ofertas de apoyo académico.</li>
     <li><strong>Modo accesible:</strong> interfaz adaptada para estudiantes con discapacidad visual.</li>
 </ul>
-
-{% if current_user.is_authenticated %}
-    <p>Estás identificado como <strong>{{ current_user.name }}</strong> ({{ current_user.role }}).</p>
-{% else %}
-    <p>Puedes <a href="{{ url_for('login') }}">iniciar sesión</a> o
-       <a href="{{ url_for('register') }}">registrarte</a> para acceder a todas las funcionalidades.</p>
-{% endif %}
 {% endblock %}

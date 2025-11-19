@@ -2,53 +2,58 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Plataforma universitaria{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Comunitaria Universitaria</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
 </head>
 <body>
-<header>
-    <h1>Plataforma comunitaria universitaria</h1>
+    <header>
+    <div style="width: 1290px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; position: relative;">
+        <!-- Título a la izquierda -->
+        <h1 style="margin: 0; text-align: left;">
+            Plataforma comunitaria universitaria
+        </h1>
 
-    <nav>
-        <a href="{{ url_for('home') }}">Inicio</a> |
-        <a href="{{ url_for('subjects') }}">Asignaturas</a> |
-        <a href="{{ url_for('materials') }}">Materiales</a> |
-        <a href="{{ url_for('incidents') }}">Incidencias</a> |
-        <a href="{{ url_for('activities') }}">Actividades</a> |
-        <a href="{{ url_for('ads') }}">Anuncios</a> |
-        <a href="{{ url_for('accessible_mode') }}">Modo accesible</a>
-    </nav>
-
-    <div style="margin-top: 10px;">
-        {% if current_user.is_authenticated %}
-            <strong>Conectado como:</strong>
-            {{ current_user.name }} ({{ current_user.role }})
-            |
-            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
-        {% else %}
-            <a href="{{ url_for('login') }}">Iniciar sesión</a> |
-            <a href="{{ url_for('register') }}">Registrarse</a>
-        {% endif %}
+        <!-- Logo de la facultad a la derecha -->
+        <a href="https://informatica.ucm.es" target="_blank">
+            <img src="{{ url_for('static', filename='img/ucm.jpg') }}" 
+     alt="Facultad de Informática UCM" 
+     style="height: 140px;margin-left: 5px width: auto; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.4); transition: all 0.3s;">
+        </a>
     </div>
 
-    <hr>
+    <!-- El menú debajo, centrado -->
+    <nav>
+        <div>
+            <a href="{{ url_for('home') }}">Inicio</a>
+            <a href="{{ url_for('subjects') }}">Asignaturas</a>
+            <a href="{{ url_for('materials') }}">Materiales</a>
+            <a href="{{ url_for('incidents') }}">Incidencias</a>
+            <a href="{{ url_for('activities') }}">Actividades</a>
+            <a href="{{ url_for('ads') }}">Anuncios</a>
+            <a href="{{ url_for('accessible_mode') }}">Modo accesible</a>
+        </div>
+
+        <div class="auth-links">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}">Cerrar sesión ({{ current_user.name }})</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Iniciar sesión</a>
+                <a href="{{ url_for('register') }}">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
 </header>
-
-<!-- Mensajes flash (éxito, error, etc.) -->
-<section>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
                 {% for category, message in messages %}
-                    <li><strong>{{ category|capitalize }}:</strong> {{ message }}</li>
+                    <div class="flash-messages {{ category }}">{{ message }}</div>
                 {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-</section>
+            {% endif %}
+        {% endwith %}
 
-<main>
-    {% block content %}{% endblock %}
-</main>
+        {% block content %}{% endblock %}
+    </main>
 </body>
 </html>
