@@ -7,24 +7,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
 </head>
 <body>
-    <header>
-    <div style="width: 1290px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; position: relative;">
-        <!-- Título a la izquierda -->
-        <h1 style="margin: 0; text-align: left;">
+    <header style="background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('{{ url_for('static', filename='img/ucm2.jpg') }}') center center / cover no-repeat; min-height: 420px; padding: 0; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 2.5rem 4rem; background: transparent; height: 180px;">
+        <h1 style="margin: 0; font-size: 3.4rem; color: white; text-shadow: 2px 2px 12px rgba(0,0,0,0.9);">
             Plataforma comunitaria universitaria
         </h1>
-
-        <!-- Logo de la facultad a la derecha -->
         <a href="https://informatica.ucm.es" target="_blank">
-            <img src="{{ url_for('static', filename='img/ucm.jpg') }}" 
-     alt="Facultad de Informática UCM" 
-     style="height: 140px;margin-left: 5px width: auto; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.4); transition: all 0.3s;">
+            <img src="{{ url_for('static', filename='img/ucm.jpg') }}" alt="Facultad de Informática UCM" style="height: 160px; width: auto; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 5px solid rgba(255,255,255,0.4);">
         </a>
     </div>
 
-    <!-- El menú debajo, centrado -->
-    <nav>
-        <div>
+    <nav style="text-align: center; padding: 1rem 0 3rem 0;">
+        <div style="display: inline-flex; gap: 2.2rem; flex-wrap: wrap; justify-content: center;">
             <a href="{{ url_for('home') }}">Inicio</a>
             <a href="{{ url_for('subjects') }}">Asignaturas</a>
             <a href="{{ url_for('materials') }}">Materiales</a>
@@ -33,8 +27,7 @@
             <a href="{{ url_for('ads') }}">Anuncios</a>
             <a href="{{ url_for('accessible_mode') }}">Modo accesible</a>
         </div>
-
-        <div class="auth-links">
+        <div class="auth-links" style="margin-top: 1.5rem;">
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('logout') }}">Cerrar sesión ({{ current_user.name }})</a>
             {% else %}

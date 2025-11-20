@@ -9,129 +9,123 @@ body {
     color: #2e7d32;
 }
 
-header {
-    background: linear-gradient(to right, #1b5e20, #2e7d32);
-    padding: 2rem 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    text-align: center;
+/* Texto blanco con sombra fuerte para que se lea perfecto sobre la foto */
+header h1,
+header nav a,
+header .auth-links a {
+    color: white !important;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.9);
+    position: relative;
+    z-index: 2;
 }
 
 header h1 {
-    color: white;
     font-family: 'Montserrat', sans-serif;
-    font-size: 3rem;
-    margin: 0;
+    font-size: 3.4rem;
     font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    margin: 0;
 }
 
-/* MENÚ PRINCIPAL */
+/* ==================== MENÚ PRINCIPAL ==================== */
 nav {
-    margin-top: 1.5rem;
-    font-size: 1.3rem;
+    margin-top: 2rem;
+    font-size: 1.35rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: 2.2rem;
 }
 
 nav a {
     color: #e8f5e8;
     text-decoration: none;
     font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
     transition: all 0.3s;
 }
 
 nav a:hover {
-    background: rgba(255,255,255,0.2);
-    transform: translateY(-3px);
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
 
-/* BOTONES LOGIN / REGISTRO */
+/* ==================== BOTONES LOGIN / REGISTRO ==================== */
 .auth-links {
     display: flex;
-    gap: 1rem;
+    gap: 1.2rem;
 }
 
 .auth-links a {
     background: white;
     color: #1b5e20;
-    padding: 0.7rem 1.8rem;
+    padding: 0.8rem 2rem;
     border-radius: 50px;
     font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
     transition: all 0.3s;
 }
 
 .auth-links a:hover {
     background: #f0f8e8;
-    transform: scale(1.07);
+    transform: scale(1.08);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
-/* CONTENIDO */
+/* ==================== LOGO UCM ==================== */
+header img {
+    transition: all 0.4s ease;
+    border: 4px solid rgba(255,255,255,0.3);
+    border-radius: 16px;
+}
+
+header img:hover {
+    transform: scale(1.1) translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    border-color: white;
+}
+
+/* ==================== CONTENIDO PRINCIPAL ==================== */
 main {
     max-width: 1100px;
     margin: 3rem auto;
     background: rgba(255,255,255,0.97);
-    padding: 3rem;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    padding: 3.5rem;
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
 }
 
 h2 {
     color: #1b5e20;
     font-family: 'Montserrat', sans-serif;
-    font-size: 2.4rem;
+    font-size: 2.6rem;
     text-align: center;
+    margin-bottom: 1.5rem;
 }
 
-/* FLASH MESSAGES */
+/* ==================== FLASH MESSAGES ==================== */
 .flash-messages {
-    max-width: 600px;
+    max-width: 700px;
     margin: 2rem auto;
-    padding: 1rem;
-    border-radius: 8px;
+    padding: 1.2rem;
+    border-radius: 12px;
     text-align: center;
     font-weight: bold;
+    font-size: 1.1rem;
 }
-.success { background: #e8f5e8; color: #2e7d32; border: 2px solid #4caf50; }
-.error   { background: #ffebee; color: #c62828; border: 2px solid #f44336; }
-.info    { background: #e3f2fd; color: #1565c0; border: 2px solid #2196f3; }
-header {
-    position: relative;
-    padding: 1.5rem 0;
-}
+.success { background: #e8f5e8; color: #2e7d32; border: 3px solid #4caf50; }
+.error   { background: #ffebee; color: #c62828; border: 3px solid #f44336; }
+.info    { background: #e3f2fd; color: #1565c0; border: 3px solid #2196f3; }
 
-header h1 {
-    font-size: 2.6rem;
-    margin: 0;
-}
-
-header img {
-    transition: transform 0.3s;
-}
-
-header img:hover {
-    transform: scale(1.08);
-}
-header img {
-    transition: all 0.3s ease;
-    border: 3px solid rgba(255,255,255,0.2);
-}
-
-header img:hover {
-    transform: scale(1.08) translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
-    border-color: white;
-}
+/* Badge suave (por si lo usáis después) */
 .badge-soft {
-    background: rgba(46, 125, 50, 0.2); /* verde suave translúcido */
-    padding: 0.3rem 0.7rem;
-    border-radius: 6px;
-    color: #1b5e20; /* verde más oscuro para el texto */
+    display: inline-block;
+    background-color: #c8e6c9;
+    color: #1b5e20;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
     font-weight: 600;
+    font-size: 0.9rem;
 }
-

@@ -165,9 +165,8 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash("Has cerrado sesión.", "info")
+    flash("¡Sesión cerrada correctamente!", "success")
     return redirect(url_for("home"))
-
 
 # --------------------------------------------------------------------
 # Ejemplo de ruta solo para admins (opcional, para más adelante)
