@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if mode == 'editar' %}Editar anuncio{% else %}Nuevo anuncio{% endif %}
+{% endblock %}
+
+{% block content %}
+<h2>
+    {% if mode == 'editar' %}Editar anuncio{% else %}Nuevo anuncio{% endif %}
+</h2>
+
+<form method="post">
+    <label for="title">Título</label><br>
+    <input
+        type="text"
+        id="title"
+        name="title"
+        value="{{ anuncio.title if anuncio is defined else '' }}"
+        required
+    ><br><br>
+
+    <label for="content">Contenido</label><br>
+    <textarea
+        id="content"
+        name="content"
+        rows="5"
+        cols="60"
+        required
+    >{{ anuncio.content if anuncio is defined else '' }}</textarea><br><br>
+
+    <label for="expires_at">Fecha de caducidad</label><br>
+    <input
+        type="date"
+        id="expires_at"
+        name="expires_at"
+        value="{% if anuncio is defined %}{{ anuncio.expires_at.strftime('%Y-%m-%d') }}{% endif %}"
+        required
+    ><br><br>
+
+    <button type="submit">
+        {% if mode == 'editar' %}Guardar cambios{% else %}Crear anuncio{% endif %}
+    </button>
+</form>
+
+<p style="margin-top: 15px;">
+    <a href="{{ url_for('ads') }}">⬅ Volver al tablón</a>
+</p>
+{% endblock %}
