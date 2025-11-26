@@ -7,7 +7,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
 </head>
 <body>
-    <header style="background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('{{ url_for('static', filename='img/ucm2.jpg') }}') center center / cover no-repeat; min-height: 420px; padding: 0; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
+    <header style="background: 
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), 
+    url('{{ url_for("static", filename="img/ucm2.jpg") }}') center top / auto 100% no-repeat; 
+    min-height: 200px; padding: 0; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
+
+
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 2.5rem 4rem; background: transparent; height: 180px;">
         <h1 style="margin: 0; font-size: 3.4rem; color: white; text-shadow: 2px 2px 12px rgba(0,0,0,0.9);">
             Plataforma comunitaria universitaria

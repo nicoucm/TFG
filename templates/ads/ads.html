@@ -10,11 +10,11 @@
         <a href="{{ url_for('ad_create') }}">➕ Crear nuevo anuncio</a>
     </p>
 {% else %}
-    <p>Inicia sesión para poder publicar anuncios.</p>
+    <p> Debes iniciar sesión con tu cuenta para publicar anuncios.</p>
 {% endif %}
 
 {% if anuncios %}
-    <table border="1" cellpadding="8" cellspacing="0">
+    <table class="tabla-centrada" border="1" cellpadding="8" cellspacing="0">
         <thead>
             <tr>
                 <th>Título</th>
@@ -27,22 +27,15 @@
         <tbody>
         {% for anuncio in anuncios %}
             <tr>
-                <td>
-                    <a href="{{ url_for('ad_detail', ad_id=anuncio.id) }}">
-                        {{ anuncio.title }}
-                    </a>
-                </td>
+                <td><a href="{{ url_for('ad_detail', ad_id=anuncio.id) }}">{{ anuncio.title }}</a></td>
                 <td>{{ anuncio.user.name }}</td>
                 <td>{{ anuncio.created_at.strftime('%d/%m/%Y') }}</td>
                 <td>{{ anuncio.expires_at.strftime('%d/%m/%Y') }}</td>
                 <td>
                     {% if current_user.is_authenticated and (current_user.role == 'admin' or current_user.id == anuncio.user_id) %}
-                        <a href="{{ url_for('ad_edit', ad_id=anuncio.id) }}">Editar</a>
-                        |
+                        <a href="{{ url_for('ad_edit', ad_id=anuncio.id) }}">Editar</a> |
                         <form action="{{ url_for('ad_delete', ad_id=anuncio.id) }}" method="post" style="display:inline;">
-                            <button type="submit" onclick="return confirm('¿Seguro que quieres eliminar este anuncio?');">
-                                Eliminar
-                            </button>
+                            <button type="submit" onclick="return confirm('¿Seguro que quieres eliminar este anuncio?');">Eliminar</button>
                         </form>
                     {% else %}
                         -
