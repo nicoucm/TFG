@@ -9,7 +9,7 @@ body {
     color: #2e7d32;
 }
 
-/* ==================== HEADER (ya lo tenías perfecto) ==================== */
+/* ------------------ HEADER --------------------- */
 header h1,
 header nav a,
 header .auth-links a {
@@ -20,7 +20,7 @@ header .auth-links a {
 }
 header h1 { font-family: 'Montserrat', sans-serif; font-size: 3.4rem; font-weight: 700; margin: 0; }
 
-/* ==================== MENÚ Y BOTONES (los de siempre) ==================== */
+/* --------------- Menú y botones ----------------- */
 nav { margin-top: 2rem; font-size: 1.35rem; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 2.2rem; }
 nav a { color: #e8f5e8; text-decoration: none; font-weight: 600; padding: 0.6rem 1.2rem; border-radius: 10px; transition: all 0.3s; }
 nav a:hover { background: rgba(255,255,255,0.25); transform: translateY(-4px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
@@ -32,19 +32,19 @@ nav a:hover { background: rgba(255,255,255,0.25); transform: translateY(-4px); b
 header img { transition: all 0.4s ease; border: 4px solid rgba(255,255,255,0.3); border-radius: 16px; }
 header img:hover { transform: scale(1.1) translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.6); border-color: white; }
 
-/* ==================== MAIN ==================== */
+
 main {
     max-width: 875px;
     margin: 3rem auto;
     background: rgba(255,255,255,0.97);
-    padding: 6rem 3.5rem;       /* un poco más de espacio interno */
-    min-height: 100vh;      /* altura mínima = 80% de la ventana */
+    padding: 6rem 3.5rem;      
+    min-height: 100vh;      
     border-radius: 18px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.15);
 }
 h2 { color: #1b5e20; font-family: 'Montserrat', sans-serif; font-size: 2.6rem; text-align: center; margin-bottom: 1.5rem; }
 
-/* ==================== TABLÓN DE ANUNCIOS – ESTILO FINAL ==================== */
+/*----------------------- Anunciooos ---------------------*/
 .table-wrapper {
     overflow-x: auto;
     margin: 2rem 0;
@@ -78,13 +78,13 @@ h2 { color: #1b5e20; font-family: 'Montserrat', sans-serif; font-size: 2.6rem; t
     background-color: #e8f5e8;
 }
 
-/* Bordes gruesos y esquinas redondeadas */
+
 .ads-table th:first-child { border-top-left-radius: 14px; }
 .ads-table th:last-child  { border-top-right-radius: 14px; }
 .ads-table tbody tr:last-child td:first-child { border-bottom-left-radius: 14px; }
 .ads-table tbody tr:last-child td:last-child  { border-bottom-right-radius: 14px; }
 
-/* Botones bonitos */
+
 .btn-create {
     background: #2e7d32;
     color: white;
@@ -105,27 +105,27 @@ h2 { color: #1b5e20; font-family: 'Montserrat', sans-serif; font-size: 2.6rem; t
 .tabla-centrada {
     margin: 2rem auto;
     display: table;
-    border-collapse: separate;       /* importante: no collapse si quieres bordes visibles */
+    border-collapse: separate;       
     border-spacing: 0;
-    border: 1.5px solid #2e7d32;       /* borde verde */
+    border: 1.5px solid #2e7d32;       
     border-radius: 0px;
     overflow: hidden;
     background: rgb(252, 253, 252);
 }
 .tabla-centrada td, .tabla-centrada th {
-    border: 1.5px solid #2e7d32;       /* bordes internos visibles */
+    border: 1.5px solid #2e7d32;       
 }
 
 .tabla-centrada th {
-    background-color: rgb(195, 218, 195); /* verde clarito */
-    color: #419647;                     /* opcional, para contraste */
+    background-color: rgb(195, 218, 195); 
+    color: #419647;                      
 }
 
 
 
 
 
-/* ==================== FLASH MESSAGES ==================== */
+
 .flash-messages { max-width:700px; margin:2rem auto; padding:1.2rem; border-radius:12px; text-align:center; font-weight:bold; font-size:1.1rem; }
 .success { background:#e8f5e8; color:#2e7d32; border:3px solid #4caf50; }
 .error   { background:#ffebee; color:#c62828; border:3px solid #f44336; }
@@ -137,24 +137,24 @@ h2 { color: #1b5e20; font-family: 'Montserrat', sans-serif; font-size: 2.6rem; t
 body::before,
 body::after {
     content: "";
-    position: fixed;        /* se mantiene al hacer scroll */
+    position: fixed;        
     top: 0;
-    width: 335px;           /* ancho de la franja lateral, ajusta a tu gusto */
+    width: 335px;          
     height: 100%;
     background: url('img/laterales.jpg') no-repeat center top;
-    background-size: cover; /* ajusta la imagen al alto del lateral */
-    z-index: 0;             /* detrás de todo el contenido */
+    background-size: cover; 
+    z-index: 0;             
 }
 
 body::before {
-    left: 0;  /* lateral izquierdo */
+    left: 0;  
 }
 
 body::after {
-    right: 0; /* lateral derecho */
+    right: 0; 
 }
 
-/* Para que el contenido principal quede encima */
+
 main, header, nav {
     position: relative;
     z-index: 1;
