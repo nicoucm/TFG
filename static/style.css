@@ -134,27 +134,36 @@ h2 { color: #1b5e20; font-family: 'Montserrat', sans-serif; font-size: 2.6rem; t
 .badge-soft { display:inline-block; background:#c8e6c9; color:#1b5e20; padding:0.4rem 0.9rem; border-radius:8px; font-weight:600; font-size:0.9rem; }
 
 
+/* Propiedades COMUNES para ambos laterales */
 body::before,
 body::after {
     content: "";
-    position: fixed;        
+    position: fixed;
     top: 0;
-    width: 335px;          
+    width: 335px;
     height: 100%;
-    background: url('img/laterales.jpg') no-repeat center top;
+    /* Quitamos la URL de aquí y dejamos solo la configuración */
+    background-repeat: no-repeat;
+    background-position: center top;
     background-size: cover; 
-    z-index: 0;             
+    z-index: 0;
 }
 
+/* Lateral IZQUIERDO */
 body::before {
-    left: 0;  
+    left: 0;
+    /* Aquí va la imagen de la izquierda */
+    background-image: url('img/hall.jpg');
 }
 
+/* Lateral DERECHO */
 body::after {
-    right: 0; 
+    right: 0;
+    /* CAMBIA 'biblioteca.jpg' por el nombre de tu segunda foto */
+    background-image: url('img/pasillo.jpg'); 
 }
 
-
+/* Asegurar que el contenido vaya por encima */
 main, header, nav {
     position: relative;
     z-index: 1;

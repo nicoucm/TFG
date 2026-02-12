@@ -1,32 +1,27 @@
-from flask import Flask, render_template, redirect, url_for, request, flash, abort, session
+import os
+import pathlib
+import requests
+from flask import Flask, render_template, redirect, url_for, request, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-import os
-import identity.web  # Requiere: pip install identity
+
+# --- LIBRERÍAS DE GOOGLE ---
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+from pip._vendor import cachecontrol
+from google.auth.transport import requests as google_requests
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "super-secreto-tfg"
 
-# --- CONFIGURACIÓN SSO UCM (Microsoft Azure AD) ---
-# Se recomienda crear un archivo .env con estos valores
-CLIENT_ID = os.getenv("CLIENT_ID", "pon-aqui-tu-client-id")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET", "pon-aqui-tu-client-secret")
-AUTHORITY = os.getenv("AUTHORITY", "https://login.microsoftonline.com/common") 
+# --- CONFIGURACIÓN GOOGLE ---
+# Esto permite que funcione en tu ordenador (http) sin certificado de seguridad
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-# Configuración de Sesión (Necesaria para manejar el flujo de SSO)
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
-
-# Adaptador de identidad para gestionar el login con Microsoft
-auth = identity.web.Auth(
-    session=session,
-    client_id=CLIENT_ID,
-    client_credential=CLIENT_SECRET,
-    authority=AUTHORITY,
-)
+# Buscamos el archivo JSON que acabas de descargar
+CLIENT_SECRETS_FILE = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
 
 # --- CONFIGURACIÓN BASE DE DATOS ---
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -34,7 +29,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "t
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
-
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
@@ -44,8 +38,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    password_hash = db.Column(db.String(200), nullable=True) # Nullable para usuarios SSO
     role = db.Column(db.String(20), nullable=False, default="estudiante")
+    password_hash = db.Column(db.String(200), nullable=True)
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
@@ -68,34 +62,72 @@ class Announcement(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --- RUTAS DE AUTENTICACIÓN SSO ---
+# --- RUTAS DE LOGIN GOOGLE ---
 
-@app.route("/getAToken")
-def auth_response():
-    """Callback donde Microsoft redirige al usuario tras el login"""
-    result = auth.complete_log_in(request.args)
-    if "error" in result:
-        flash(f"Error en SSO: {result.get('error_description')}", "error")
+@app.route("/login_google")
+def login_google():
+    """Paso 1: El usuario pulsa el botón y le enviamos a Google"""
+    flow = Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE,
+        scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"]
+    )
+    # Le decimos a Google que vuelva a nuestra ruta /callback
+    flow.redirect_uri = url_for("callback", _external=True)
+    
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    return redirect(authorization_url)
+
+@app.route("/callback")
+def callback():
+    """Paso 2: Google nos devuelve al usuario. Verificamos quién es."""
+    try:
+        flow = Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE,
+            scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
+            state=session["state"]
+        )
+        flow.redirect_uri = url_for("callback", _external=True)
+
+        # Canjeamos el código que nos da Google por un Token real
+        flow.fetch_token(authorization_response=request.url)
+
+        # Verificamos la identidad
+        credentials = flow.credentials
+        request_session = requests.session()
+        cached_session = cachecontrol.CacheControl(request_session)
+        token_request = google_requests.Request(session=cached_session)
+
+        id_info = id_token.verify_oauth2_token(
+            id_token=credentials._id_token,
+            request=token_request,
+            audience=credentials.client_id
+        )
+
+        email = id_info.get("email")
+        name = id_info.get("name")
+
+        # --- FILTRO UCM (Opcional) ---
+        # if not email.endswith("@ucm.es"):
+        #     flash("Lo sentimos, solo se permite acceso con cuenta @ucm.es", "error")
+        #     return redirect(url_for("login"))
+
+        # Buscamos si el usuario ya existe, si no, lo creamos
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            user = User(email=email, name=name, role="estudiante")
+            db.session.add(user)
+            db.session.commit()
+        
+        login_user(user)
+        flash(f"¡Bienvenido/a {name}!", "success")
+        return redirect(url_for("home"))
+
+    except Exception as e:
+        flash(f"Error en el inicio de sesión con Google: {str(e)}", "error")
         return redirect(url_for("login"))
-    
-    user_claims = result.get("id_token_claims")
-    email = user_claims.get("preferred_username").lower()
-    name = user_claims.get("name")
 
-    # Verificar si el usuario ya existe en tfg.db
-    user = User.query.filter_by(email=email).first()
-
-    if not user:
-        # Registro automático de nuevos alumnos UCM
-        user = User(email=email, name=name, role="estudiante")
-        db.session.add(user)
-        db.session.commit()
-        flash(f"Cuenta creada automáticamente para {name}.", "success")
-    
-    login_user(user)
-    return redirect(url_for("home"))
-
-# --- RUTAS DE NAVEGACIÓN Y LOGICA ---
+# --- RESTO DE RUTAS ---
 
 @app.route("/")
 def home():
@@ -109,25 +141,19 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
             login_user(user)
-            flash("Sesión local iniciada.", "success")
+            flash("Sesión iniciada correctamente.", "success")
             return redirect(url_for("home"))
         else:
             flash("Credenciales incorrectas.", "error")
-            return redirect(url_for("login"))
     
-    # Preparamos la URL de SSO para el botón en la plantilla
-    sso_context = auth.log_in(
-        scopes=["User.Read"],
-        redirect_uri=url_for("auth_response", _external=True)
-    )
-    return render_template("login.html", auth_url=sso_context["auth_uri"])
+    return render_template("login.html")
 
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    # Redirige también al logout de Microsoft para cierre completo
-    return redirect(auth.log_out(url_for("home", _external=True)))
+    flash("Has cerrado sesión.", "info")
+    return redirect(url_for("home"))
 
 @app.route("/asignaturas")
 def subjects(): 
@@ -152,14 +178,11 @@ def accessible_mode():
 
 @app.route("/anuncios")
 def ads():
-    # Limpieza rápida de anuncios expirados (opcional aquí)
     now = datetime.utcnow()
     anuncios = Announcement.query.filter(Announcement.expires_at >= now).order_by(Announcement.created_at.desc()).all()
     return render_template("ads/ads.html", anuncios=anuncios)
 
-# --- INICIO DE LA APP ---
-
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all() # Asegura que tfg.db tenga las tablas actualizadas
+        db.create_all()
     app.run(debug=True)
