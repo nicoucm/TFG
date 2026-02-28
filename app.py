@@ -58,6 +58,18 @@ class Announcement(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     user = db.relationship("User", backref="announcements")
 
+class Incident(db.Model):
+    __tablename__ = "incidents"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default="Abierta")
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    
+    # El user_id es opcional (nullable=True) para permitir incidencias ANÓNIMAS
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    user = db.relationship("User", backref="incidents")
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -163,10 +175,35 @@ def subjects():
 def materials(): 
     return render_template("materials.html")
 
-@app.route("/incidencias")
+@app.route("/incidencias", methods=["GET", "POST"])
 @login_required
-def incidents(): 
-    return render_template("incidents.html")
+def incidents():
+    if request.method == "POST":
+        title = request.form.get("title")
+        description = request.form.get("description")
+        is_anonymous = request.form.get("anonymous") # Comprueba si marcaron la casilla
+        
+        # LA MAGIA DEL ANONIMATO:
+        # Si marcan la casilla, guardamos 'None' en el ID de usuario. 
+        # Si no la marcan, guardamos su ID real para que puedan ver el estado luego.
+        user_id_to_save = None if is_anonymous else current_user.id
+        
+        nueva_incidencia = Incident(
+            title=title,
+            description=description,
+            user_id=user_id_to_save
+        )
+        db.session.add(nueva_incidencia)
+        db.session.commit()
+        
+        flash("Tu incidencia ha sido enviada correctamente al equipo de moderación.", "success")
+        return redirect(url_for("incidents"))
+        
+    # Cuando entran a la página (GET), buscamos solo las incidencias que SÍ tienen su nombre
+    # para mostrárselas en una tablita y que vean si están resueltas.
+    mis_incidencias = Incident.query.filter_by(user_id=current_user.id).order_by(Incident.created_at.desc()).all()
+    
+    return render_template("incidents.html", incidencias=mis_incidencias)
 
 @app.route("/actividades")
 def activities(): 
@@ -176,12 +213,78 @@ def activities():
 def accessible_mode():
     return render_template("accessible.html")
 
+# --- RUTAS DE GESTIÓN DE ANUNCIOS ---
 @app.route("/anuncios")
 def ads():
     now = datetime.utcnow()
+    # Muestra solo los anuncios que no han caducado, ordenados por fecha
     anuncios = Announcement.query.filter(Announcement.expires_at >= now).order_by(Announcement.created_at.desc()).all()
     return render_template("ads/ads.html", anuncios=anuncios)
 
+@app.route("/anuncios/nuevo", methods=["GET", "POST"])
+@login_required
+def ad_create():
+    if request.method == "POST":
+        title = request.form["title"]
+        content = request.form["content"]
+        # Convertimos la fecha del formulario (string) a objeto datetime
+        expires_at_str = request.form["expires_at"]
+        expires_at = datetime.strptime(expires_at_str, '%Y-%m-%d')
+        
+        nuevo_anuncio = Announcement(
+            title=title,
+            content=content,
+            expires_at=expires_at,
+            user_id=current_user.id
+        )
+        db.session.add(nuevo_anuncio)
+        db.session.commit()
+        flash("Anuncio publicado con éxito.", "success")
+        return redirect(url_for("ads"))
+        
+    return render_template("ads/ad_form.html", mode="nuevo")
+
+@app.route("/anuncios/<int:ad_id>")
+def ad_detail(ad_id):
+    anuncio = Announcement.query.get_or_404(ad_id)
+    return render_template("ads/ad_detail.html", anuncio=anuncio)
+
+@app.route("/anuncios/<int:ad_id>/editar", methods=["GET", "POST"])
+@login_required
+def ad_edit(ad_id):
+    anuncio = Announcement.query.get_or_404(ad_id)
+    
+    # Seguridad: Solo el dueño o un admin pueden editar
+    if current_user.role != 'admin' and current_user.id != anuncio.user_id:
+        flash("No tienes permiso para editar este anuncio.", "error")
+        return redirect(url_for("ads"))
+        
+    if request.method == "POST":
+        anuncio.title = request.form["title"]
+        anuncio.content = request.form["content"]
+        expires_at_str = request.form["expires_at"]
+        anuncio.expires_at = datetime.strptime(expires_at_str, '%Y-%m-%d')
+        
+        db.session.commit()
+        flash("Anuncio actualizado correctamente.", "success")
+        return redirect(url_for("ad_detail", ad_id=anuncio.id))
+        
+    return render_template("ads/ad_form.html", mode="editar", anuncio=anuncio)
+
+@app.route("/anuncios/<int:ad_id>/eliminar", methods=["POST"])
+@login_required
+def ad_delete(ad_id):
+    anuncio = Announcement.query.get_or_404(ad_id)
+    
+    # Seguridad: Solo el dueño o un admin pueden borrar
+    if current_user.role != 'admin' and current_user.id != anuncio.user_id:
+        flash("No tienes permiso para eliminar este anuncio.", "error")
+        return redirect(url_for("ads"))
+        
+    db.session.delete(anuncio)
+    db.session.commit()
+    flash("Anuncio eliminado.", "success")
+    return redirect(url_for("ads"))
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
