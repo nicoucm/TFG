@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{{ subject.name }} - CampusConnect{% endblock %}
+
+{% block content %}
+<style>
+    h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; color: #1b5e20; }
+    p, label, input, textarea, select { font-family: 'Open Sans', sans-serif; }
+    .badge-soft { background: #e8f5e8; color: #1b5e20; padding: 5px 12px; border-radius: 8px; font-weight: bold; }
+    .form-container { max-width: 650px; margin: 25px auto; background: #f9fbf9; border-radius: 16px; border: 1px solid #c8e6c9; padding: 25px; box-shadow: 0 4px 6px rgba(46, 125, 50, 0.05); }
+    .btn-create { background-color: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Montserrat', sans-serif; }
+    .btn-create:hover { background-color: #1b5e20; }
+    .tabla-centrada { width: 100%; border-collapse: collapse; text-align: left; }
+    .tabla-centrada td { padding: 12px; border-bottom: 1px solid #e8f5e8; }
+</style>
+
+<div style="text-align: center; margin-bottom: 30px;">
+    <h2><span class="badge-soft">{{ subject.name }}</span></h2>
+    <h3 style="color: #2e7d32; margin-top: 10px;">Dificultad Media: ⭐ {{ subject.average_difficulty }} / 5</h3>
+</div>
+
+<div class="form-container">
+    <h4 style="border-bottom: 2px solid #2e7d32; padding-bottom: 8px;">📚 Criterios de Evaluación</h4>
+    <p style="color: #444; margin-top: 15px; line-height: 1.6;">
+        {{ subject.evaluation_criteria or 'Los criterios de evaluación aún no han sido definidos por la comunidad.' }}
+    </p>
+</div>
+
+<div class="form-container">
+    <h4 style="border-bottom: 2px solid #2e7d32; padding-bottom: 8px; margin-bottom: 15px;">📄 Apuntes Compartidos</h4>
+    
+    <table class="tabla-centrada">
+        {% for doc in subject.documents %}
+        <tr>
+            <td>
+                <strong style="color: #1b5e20;">{{ doc.title }}</strong><br>
+                <small style="color: #666;">Por: {{ doc.user.name }} | Descargas: {{ doc.downloads }}</small>
+            </td>
+            <td style="text-align: right;">
+                <a href="{{ url_for('subjects.download_document', doc_id=doc.id) }}">
+                    <button class="btn-create" style="padding: 6px 12px; font-size: 0.85em;">📥 Descargar</button>
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="2" style="color: #666; text-align: center; padding: 20px;">No hay apuntes disponibles. ¡Sé el primero en subir uno!</td></tr>
+        {% endfor %}
+    </table>
+
+    <form action="{{ url_for('subjects.upload_document', subject_id=subject.id) }}" method="POST" enctype="multipart/form-data" style="margin-top: 25px; border-top: 1px dashed #c8e6c9; padding-top: 20px;">
+        <label style="color: #2e7d32; font-weight: 600;">Subir nuevo apunte:</label><br>
+        <input type="text" name="title" placeholder="Ej: Resumen Tema 1-4" required style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #c8e6c9; border-radius: 6px; box-sizing: border-box;">
+        <input type="file" name="file" required style="margin-bottom: 15px; width: 100%; color: #444;"><br>
+        <button type="submit" class="btn-create" style="width: 100%;">📤 Subir Archivo</button>
+    </form>
+</div>
+
+<div class="form-container">
+    <h4 style="border-bottom: 2px solid #2e7d32; padding-bottom: 8px; margin-bottom: 15px;">💬 Reseñas de Compañeros</h4>
+    
+    {% for review in subject.reviews %}
+    <div style="background: white; border: 1px solid #e8f5e8; padding: 15px; border-radius: 8px; margin-bottom: 12px;">
+        <strong style="color: #1b5e20;">{{ review.user.name }}</strong> <span style="color: #2e7d32;">(⭐ {{ review.difficulty }}/5)</span>
+        <p style="margin: 8px 0; color: #444; line-height: 1.5;">
+            {% if review.content %}
+                {{ review.content }}
+            {% else %}
+                <i style="color: #999;">(Solo puntuación, sin comentario)</i>
+            {% endif %}
+        </p>
+        <small style="color: #999;">Publicado el: {{ review.created_at.strftime('%d/%m/%Y') }}</small>
+    </div>
+    {% else %}
+    <p style="color: #666; text-align: center; padding: 15px;">Todavía no hay reseñas. ¡Deja la tuya!</p>
+    {% endfor %}
+
+    <form action="{{ url_for('subjects.add_review', subject_id=subject.id) }}" method="POST" style="margin-top: 25px; border-top: 1px dashed #c8e6c9; padding-top: 20px;">
+        <div style="margin-bottom: 10px;">
+            <label style="color: #2e7d32; font-weight: 600;">Tu nota de dificultad:</label>
+            <select name="difficulty" required style="padding: 8px; margin-left: 10px; border: 1px solid #c8e6c9; border-radius: 6px; color: #444;">
+                <option value="1">1 - Muy Fácil</option>
+                <option value="2">2 - Fácil</option>
+                <option value="3">3 - Normal</option>
+                <option value="4">4 - Difícil</option>
+                <option value="5">5 - Muy Difícil</option>
+            </select>
+        </div>
+        <textarea name="content" placeholder="¿Qué te pareció la asignatura? Evalúa al profesorado, temario, etc... (Opcional)" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #c8e6c9; border-radius: 6px; min-height: 90px; box-sizing: border-box; font-family: 'Open Sans', sans-serif;"></textarea>
+        <button type="submit" class="btn-create" style="width: 100%;">📝 Publicar Reseña</button>
+    </form>
+</div>
+{% endblock %}

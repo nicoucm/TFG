@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Asignaturas - CampusConnect{% endblock %}
+
+{% block content %}
+<style>
+    h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+    p, span, td, th { font-family: 'Open Sans', sans-serif; }
+    .badge-soft { background: #e8f5e8; color: #1b5e20; padding: 6px 14px; border-radius: 8px; font-weight: bold; font-size: 0.9em; }
+    .btn-create { background-color: #2e7d32; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; transition: background 0.3s; text-decoration: none;}
+    .btn-create:hover { background-color: #1b5e20; }
+    .tabla-centrada { width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; }
+    .tabla-centrada th { background-color: #2e7d32; color: white; padding: 12px; }
+    .tabla-centrada td { padding: 12px; border-bottom: 1px solid #c8e6c9; }
+</style>
+
+<div style="text-align: center; margin-bottom: 40px;">
+    <h2><span class="badge-soft">Grado en Informática UCM</span></h2>
+    <p style="color: #444; margin-top: 10px;">Selecciona una asignatura para ver criterios, apuntes y reseñas de compañeros.</p>
+</div>
+
+{% for year, subjects in subjects_by_year.items() %}
+    <div style="max-width: 850px; margin: 0 auto 50px auto;">
+        <h3 style="color: #2e7d32; border-bottom: 2px solid #e8f5e8; padding-bottom: 10px;">{{ year }}º Curso</h3>
+        
+        <table class="tabla-centrada">
+            <thead>
+                <tr>
+                    <th style="border-top-left-radius: 8px;">Asignatura</th>
+                    <th style="text-align: center;">Dificultad (1-5)</th>
+                    <th style="text-align: center; border-top-right-radius: 8px;">Acceso</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject in subjects %}
+                <tr>
+                    <td style="font-weight: bold; color: #1b5e20;">{{ subject.name }}</td>
+                    <td style="text-align: center; color: #444;">⭐ {{ subject.average_difficulty }}</td>
+                    <td style="text-align: center;">
+                        <a href="{{ url_for('subjects.subject_detail', subject_id=subject.id) }}" class="btn-create" style="display: inline-block;">Ver Recursos</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #666; font-style: italic;">Aún no hay asignaturas registradas para este curso.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endfor %}
+{% endblock %}
