@@ -149,9 +149,6 @@ def incidents():
     mis_incidencias = Incident.query.filter_by(user_id=current_user.id).order_by(Incident.created_at.desc()).all()
     return render_template("incidents.html", incidencias=mis_incidencias)
 
-@app.route("/actividades")
-def activities(): 
-    return render_template("activities.html")
 
 @app.route("/accesible")
 def accessible_mode():
@@ -223,6 +220,10 @@ def ad_delete(ad_id):
 # --- CONEXIÓN DEL BLUEPRINT DE ASIGNATURAS ---
 from routes_subjects import subjects_bp
 app.register_blueprint(subjects_bp)
+
+# --- CONEXIÓN DEL BLUEPRINT DE ACTIVIDADES ---
+from routes_activities import activities_bp
+app.register_blueprint(activities_bp)
 
 if __name__ == "__main__":
     with app.app_context():

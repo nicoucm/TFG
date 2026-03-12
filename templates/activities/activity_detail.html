@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ activity.title }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
+
+    <!-- BOTÓN VOLVER -->
+    <a href="{{ url_for('activities.activities_list') }}" style="color: #2e7d32; text-decoration: none; font-size: 0.9rem;">← Volver a actividades</a>
+
+    <!-- TARJETA PRINCIPAL -->
+    <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); overflow: hidden; margin-top: 1rem;">
+
+        {% if activity.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/activities/' + activity.image_filename) }}" style="width: 100%; height: 300px; object-fit: cover;">
+        {% else %}
+            <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #a5d6a7, #2e7d32); display: flex; align-items: center; justify-content: center; font-size: 4rem;">📅</div>
+        {% endif %}
+
+        <div style="padding: 2rem;">
+            <h2 style="color: #2e7d32; margin: 0 0 1rem 0;">{{ activity.title }}</h2>
+            <p style="color: #555; line-height: 1.6; margin-bottom: 1.5rem;">{{ activity.description }}</p>
+
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <span>🗓️ {{ activity.date.strftime('%d/%m/%Y a las %H:%M') }}</span>
+                <span>📍 {{ activity.location }}</span>
+                {% if activity.capacity %}
+                    <span>👥 {{ activity.registration_count }}/{{ activity.capacity }} plazas</span>
+                {% else %}
+                    <span>👥 {{ activity.registration_count }} inscritos</span>
+                {% endif %}
+                <span>❤️ {{ activity.likes_count }} likes</span>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+
+                <!-- LIKE -->
+                <form method="post" action="{{ url_for('activities.activity_like', activity_id=activity.id) }}">
+                    <button type="submit" class="btn-create" style="background: {{ '#e53935' if ya_like else '#fff' }}; color: {{ '#fff' if ya_like else '#e53935' }}; border: 2px solid #e53935;">
+                        ❤️ {{ 'Ya me gusta' if ya_like else 'Me gusta' }}
+                    </button>
+                </form>
+
+                <!-- INSCRIPCIÓN -->
+                {% if not activity.is_full or ya_inscrito %}
+                <form method="post" action="{{ url_for('activities.activity_register', activity_id=activity.id) }}">
+                    <button type="submit" class="btn-create" style="{{ 'background: #e53935;' if ya_inscrito else '' }}">
+                        {{ '✅ Inscrito (cancelar)' if ya_inscrito else '📋 Inscribirme' }}
+                    </button>
+                </form>
+                {% else %}
+                    <button disabled style="padding: 10px 20px; border-radius: 8px; background: #ccc; color: #fff; border: none; cursor: not-allowed;">Aforo completo</button>
+                {% endif %}
+
+                <!-- EDITAR (solo el creador) -->
+                {% if current_user.id == activity.user_id or current_user.role == 'admin' %}
+                <a href="{{ url_for('activities.activity_edit', activity_id=activity.id) }}" class="btn-create" style="background: #1976d2;">✏️ Editar</a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <!-- COMENTARIOS -->
+    <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); padding: 2rem; margin-top: 1.5rem;">
+        <h3 style="color: #2e7d32; margin-bottom: 1.5rem;">💬 Comentarios ({{ activity.comments|length }})</h3>
+
+        <form method="post" action="{{ url_for('activities.activity_comment', activity_id=activity.id) }}" style="margin-bottom: 2rem;">
+            <textarea name="content" rows="3" placeholder="Escribe un comentario..." required
+                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; resize: vertical; margin-bottom: 0.5rem;"
+                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'"></textarea>
+            <button type="submit" class="btn-create">Comentar</button>
+        </form>
+
+        {% if activity.comments %}
+            {% for comment in activity.comments|sort(attribute='created_at', reverse=True) %}
+            <div style="border-top: 1px solid #eee; padding: 1rem 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <strong style="color: #2e7d32;">{{ comment.user.name }}</strong>
+                    <span style="color: #999; font-size: 0.8rem;">{{ comment.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                </div>
+                <p style="margin: 0; color: #555;">{{ comment.content }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #999; text-align: center;">No hay comentarios todavía. ¡Sé el primero!</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

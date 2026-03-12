@@ -78,3 +78,63 @@ class Document(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=False)
     user = db.relationship("User", backref="documents_user")
+
+
+# --- MODELOS DE ACTIVIDADES ---
+class Activity(db.Model):
+    __tablename__ = "activities"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    image_filename = db.Column(db.String(255), nullable=True)
+    capacity = db.Column(db.Integer, nullable=True)
+    status = db.Column(db.String(20), nullable=False, default="pendiente")  # pendiente / aprobada / rechazada
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user = db.relationship("User", backref="activities")
+    registrations = db.relationship("ActivityRegistration", backref="activity", lazy=True, cascade="all, delete-orphan")
+    likes = db.relationship("ActivityLike", backref="activity", lazy=True, cascade="all, delete-orphan")
+    comments = db.relationship("ActivityComment", backref="activity", lazy=True, cascade="all, delete-orphan")
+
+    @property
+    def registration_count(self):
+        return len(self.registrations)
+
+    @property
+    def likes_count(self):
+        return len(self.likes)
+
+    @property
+    def is_full(self):
+        if self.capacity is None:
+            return False
+        return len(self.registrations) >= self.capacity
+
+
+class ActivityRegistration(db.Model):
+    __tablename__ = "activity_registrations"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    activity_id = db.Column(db.Integer, db.ForeignKey("activities.id"), nullable=False)
+    registered_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user = db.relationship("User", backref="activity_registrations")
+
+
+class ActivityLike(db.Model):
+    __tablename__ = "activity_likes"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    activity_id = db.Column(db.Integer, db.ForeignKey("activities.id"), nullable=False)
+    user = db.relationship("User", backref="activity_likes")
+
+
+class ActivityComment(db.Model):
+    __tablename__ = "activity_comments"
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    activity_id = db.Column(db.Integer, db.ForeignKey("activities.id"), nullable=False)
+    user = db.relationship("User", backref="activity_comments")
