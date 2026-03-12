@@ -51,7 +51,12 @@ def login_google():
     )
     flow.redirect_uri = url_for("callback", _external=True)
     authorization_url, state = flow.authorization_url()
+    
+    # Guardamos el state
     session["state"] = state
+    # ¡LA LÍNEA MÁGICA QUE FALTABA! Guardamos el code_verifier de esta sesión
+    session["code_verifier"] = flow.code_verifier
+    
     return redirect(authorization_url)
 
 @app.route("/callback")
@@ -63,7 +68,12 @@ def callback():
             state=session["state"]
         )
         flow.redirect_uri = url_for("callback", _external=True)
-        flow.fetch_token(authorization_response=request.url)
+
+        # ¡LA OTRA LÍNEA MÁGICA! Le devolvemos el code_verifier a Google
+        flow.fetch_token(
+            authorization_response=request.url,
+            code_verifier=session.get("code_verifier")
+        )
 
         credentials = flow.credentials
         request_session = requests.session()
@@ -119,10 +129,6 @@ def logout():
     logout_user()
     flash("Has cerrado sesión.", "info")
     return redirect(url_for("home"))
-
-@app.route("/materiales")
-def materials(): 
-    return render_template("materials.html")
 
 @app.route("/incidencias", methods=["GET", "POST"])
 @login_required
