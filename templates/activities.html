@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Actividades{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 2rem auto; padding: 0 1rem;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 style="color: #2e7d32; margin: 0;">📅 Actividades</h2>
+        <a href="{{ url_for('activities.activity_create') }}" class="btn-create">+ Proponer actividad</a>
+    </div>
+
+    {% if activities %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+            {% for activity in activities %}
+            <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                {% if activity.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/activities/' + activity.image_filename) }}" style="width: 100%; height: 160px; object-fit: cover;">
+                {% else %}
+                    <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #a5d6a7, #2e7d32); display: flex; align-items: center; justify-content: center; font-size: 3rem;">📅</div>
+                {% endif %}
+
+                <div style="padding: 1rem;">
+                    <h3 style="margin: 0 0 0.5rem 0; color: #2e7d32;">{{ activity.title }}</h3>
+                    <p style="color: #666; font-size: 0.85rem; margin: 0 0 0.5rem 0;">📍 {{ activity.location }}</p>
+                    <p style="color: #666; font-size: 0.85rem; margin: 0 0 0.5rem 0;">🗓️ {{ activity.date.strftime('%d/%m/%Y %H:%M') }}</p>
+                    <p style="color: #666; font-size: 0.85rem; margin: 0 0 1rem 0;">
+                        ❤️ {{ activity.likes_count }} &nbsp;|&nbsp;
+                        👥 {{ activity.registration_count }}{% if activity.capacity %}/{{ activity.capacity }}{% endif %} inscritos
+                    </p>
+                    <a href="{{ url_for('activities.activity_detail', activity_id=activity.id) }}" class="btn-create" style="display: block; text-align: center; font-size: 0.9rem;">Ver detalles</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 4rem; color: #999;">
+            <p style="font-size: 3rem;">📭</p>
+            <p style="font-size: 1.2rem;">No hay actividades disponibles todavía.</p>
+            <p>¡Sé el primero en proponer una!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
