@@ -168,3 +168,88 @@ main, header, nav {
     position: relative;
     z-index: 1;
 }
+
+
+/* =========================================================
+   MODO ACCESIBLE (ALTO CONTRASTE, LECTURA FÁCIL Y FOCO)
+   ========================================================= */
+
+/* 1. Fondo oscuro global y letra más grande */
+body.tema-accesible {
+    background: #121212 !important;
+    color: #ffffff !important;
+    font-size: 115% !important; /* Aumenta el tamaño base */
+    line-height: 1.8 !important; /* Separa las líneas de texto */
+}
+
+/* 2. Ocultar los fondos laterales para evitar distracciones visuales */
+body.tema-accesible::before,
+body.tema-accesible::after {
+    display: none !important;
+}
+
+/* 3. Contenedores principales y tablas en modo oscuro con bordes brillantes */
+body.tema-accesible main,
+body.tema-accesible .table-wrapper,
+body.tema-accesible .ads-table,
+body.tema-accesible .tabla-centrada,
+body.tema-accesible .form-container,
+body.tema-accesible .login-container {
+    background-color: #1e1e1e !important;
+    box-shadow: none !important;
+    border: 2px solid #ffeb3b !important; /* Borde amarillo de alto contraste */
+}
+
+/* 4. Textos, encabezados y celdas en blanco */
+body.tema-accesible h1, 
+body.tema-accesible h2, 
+body.tema-accesible h3, 
+body.tema-accesible h4,
+body.tema-accesible th,
+body.tema-accesible td,
+body.tema-accesible p,
+body.tema-accesible span,
+body.tema-accesible label {
+    color: #ffffff !important;
+    border-color: #ffeb3b !important; 
+}
+
+body.tema-accesible .ads-table th,
+body.tema-accesible .tabla-centrada th {
+    background-color: #333333 !important;
+    color: #ffeb3b !important;
+}
+
+/* 5. Enlaces del menú superior */
+body.tema-accesible nav a {
+    color: #ffeb3b !important;
+    text-decoration: underline !important;
+}
+
+/* 6. Botones hiper-visibles (Amarillo sobre negro) */
+body.tema-accesible .btn-create,
+body.tema-accesible .auth-links a,
+body.tema-accesible .btn-edit {
+    background: #ffeb3b !important;
+    color: #000000 !important;
+    border: 2px solid #ffffff !important;
+    font-weight: 900 !important;
+}
+body.tema-accesible .btn-delete {
+    background: #ff5252 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    font-weight: 900 !important;
+}
+
+/* Etiquetas (badges) */
+body.tema-accesible .badge-soft {
+    background: #ffeb3b !important;
+    color: #000000 !important;
+}
+
+/* 7. Foco del teclado hiper-marcado para personas con problemas motores */
+body.tema-accesible *:focus {
+    outline: 4px solid #ffeb3b !important;
+    outline-offset: 4px !important;
+}

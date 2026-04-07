@@ -51,5 +51,15 @@
 
         {% block content %}{% endblock %}
     </main>
+
+
+    <script>
+    // Al cargar cualquier página, comprobamos si el modo accesible está guardado
+    document.addEventListener("DOMContentLoaded", function() {
+        if (localStorage.getItem('modoAccesible') === 'activado') {
+            document.body.classList.add('tema-accesible');
+        }
+    });
+</script>
 </body>
 </html>

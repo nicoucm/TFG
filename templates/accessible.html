@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Modo Accesible - CampusConnect{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 40px auto; text-align: center;">
+    <h2>Panel de Accesibilidad</h2>
+    <p style="font-size: 1.1em; color: #444; margin-bottom: 30px;">
+        CampusConnect está comprometido con la inclusión. Activa el modo accesible para aplicar alto contraste, aumentar el tamaño de la letra y facilitar la navegación por teclado.
+    </p>
+
+    <div style="background: #f9fbf9; border: 2px solid #c8e6c9; border-radius: 12px; padding: 40px; margin-bottom: 30px;" class="form-container">
+        
+        <h3 id="estado-texto">El Modo Accesible está: <strong style="color: #d32f2f;">DESACTIVADO</strong></h3>
+        
+        <button id="btn-toggle-accesibilidad" class="btn-create" style="margin-top: 20px; padding: 15px 30px; font-size: 1.2em;">
+            Activar Modo Accesible
+        </button>
+
+    </div>
+</div>
+
+<script>
+    const btnAccesibilidad = document.getElementById('btn-toggle-accesibilidad');
+    const estadoTexto = document.getElementById('estado-texto');
+
+    // Función para actualizar el texto del panel según el estado actual
+    function actualizarTextosPanel() {
+        if (document.body.classList.contains('tema-accesible')) {
+            estadoTexto.innerHTML = 'El Modo Accesible está: <strong style="color: #388e3c;">ACTIVADO</strong>';
+            btnAccesibilidad.innerText = 'Desactivar Modo Accesible';
+            btnAccesibilidad.style.backgroundColor = '#d32f2f'; // Botón rojo para desactivar
+            btnAccesibilidad.style.color = 'white';
+        } else {
+            estadoTexto.innerHTML = 'El Modo Accesible está: <strong style="color: #d32f2f;">DESACTIVADO</strong>';
+            btnAccesibilidad.innerText = 'Activar Modo Accesible';
+            btnAccesibilidad.style.backgroundColor = ''; // Restaura el color por defecto
+            btnAccesibilidad.style.color = '';
+        }
+    }
+
+    // Actualizamos los textos nada más entrar a la página
+    document.addEventListener("DOMContentLoaded", actualizarTextosPanel);
+
+    // Lógica al hacer clic en el botón
+    btnAccesibilidad.addEventListener('click', function() {
+        // Ponemos o quitamos la clase en el body
+        document.body.classList.toggle('tema-accesible');
+        
+        // Lo guardamos en localStorage para que no se borre al cambiar de página
+        if (document.body.classList.contains('tema-accesible')) {
+            localStorage.setItem('modoAccesible', 'activado');
+        } else {
+            localStorage.setItem('modoAccesible', 'desactivado');
+        }
+        
+        // Actualizamos los textos del botón
+        actualizarTextosPanel();
+    });
+</script>
+{% endblock %}
