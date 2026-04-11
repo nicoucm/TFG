@@ -32,17 +32,23 @@
         </div>
 
         <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Lugar *</label>
-            <input type="text" name="location" required placeholder="Ej: Salón de actos, Facultad de Informática"
+            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Ubicación *</label>
+            <select name="location" required id="location-select"
                 style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'"
+                onchange="actualizarAforo(this)">
+                <option value="">-- Selecciona una ubicación --</option>
+                {% for u in ubicaciones %}
+                    <option value="{{ u.nombre }}" data-aforo="{{ u.aforo }}">{{ u.nombre }} (aforo: {{ u.aforo }})</option>
+                {% endfor %}
+            </select>
         </div>
 
         <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Aforo máximo <span style="color:#999; font-weight:400;">(opcional)</span></label>
-            <input type="number" name="capacity" min="1" placeholder="Ej: 50"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Aforo máximo</label>
+            <input type="number" name="capacity" id="capacity" min="1" readonly
+                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: #f5f5f5;">
+            <p style="color: #999; font-size: 0.8rem; margin-top: 0.3rem;">Se rellena automáticamente según la ubicación.</p>
         </div>
 
         <div style="margin-bottom: 2rem;">
@@ -62,4 +68,12 @@
 
     </form>
 </div>
+
+<script>
+    function actualizarAforo(select) {
+        const aforo = select.options[select.selectedIndex].getAttribute('data-aforo');
+        document.getElementById('capacity').value = aforo || '';
+    }
+</script>
+
 {% endblock %}

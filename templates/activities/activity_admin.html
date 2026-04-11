@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Moderación{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 2rem auto; padding: 0 1rem;">
+
+    <h2 style="color: #2e7d32; margin-bottom: 0.5rem;">🛡️ Panel de Moderación</h2>
+    <p style="color: #999; margin-bottom: 2rem;">Actividades pendientes de aprobación</p>
+
+    {% if pendientes %}
+        {% for activity in pendientes %}
+        <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; display: flex; gap: 1.5rem; align-items: flex-start;">
+
+            {% if activity.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/activities/' + activity.image_filename) }}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+            {% else %}
+                <div style="width: 120px; height: 90px; background: linear-gradient(135deg, #a5d6a7, #2e7d32); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0;">📅</div>
+            {% endif %}
+
+            <div style="flex: 1;">
+                <h3 style="margin: 0 0 0.5rem 0; color: #2e7d32;">{{ activity.title }}</h3>
+                <p style="color: #555; margin: 0 0 0.5rem 0; font-size: 0.9rem;">{{ activity.description }}</p>
+                <p style="color: #999; font-size: 0.85rem; margin: 0 0 0.5rem 0;">
+                    📍 {{ activity.location }} &nbsp;|&nbsp;
+                    🗓️ {{ activity.date.strftime('%d/%m/%Y %H:%M') }} &nbsp;|&nbsp;
+                    👤 {{ activity.user.name }}
+                </p>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <form method="post" action="{{ url_for('activities.activity_moderar', activity_id=activity.id) }}">
+                        <input type="hidden" name="accion" value="aprobar">
+                        <button type="submit" class="btn-create">✅ Aprobar</button>
+                    </form>
+                    <form method="post" action="{{ url_for('activities.activity_moderar', activity_id=activity.id) }}">
+                        <input type="hidden" name="accion" value="rechazar">
+                        <button type="submit" class="btn-create" style="background: #e53935;">❌ Rechazar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div style="text-align: center; padding: 4rem; color: #999;">
+            <p style="font-size: 3rem;">✅</p>
+            <p style="font-size: 1.2rem;">No hay actividades pendientes de revisión.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
