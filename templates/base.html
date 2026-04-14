@@ -28,6 +28,9 @@
                 <a href="{{ url_for('activities.activities_list') }}">Actividades</a>
                 <a href="{{ url_for('ads') }}">Anuncios</a>
                 <a href="{{ url_for('accessible_mode') }}">Modo accesible</a>
+                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                    <a href="{{ url_for('activities.activity_admin') }}">🛡️ Moderación</a>
+                {% endif %}
             </div>
             <div class="auth-links" style="margin-top: 1.5rem;">
                 {% if current_user.is_authenticated %}

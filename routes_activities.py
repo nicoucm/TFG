@@ -10,19 +10,29 @@ activities_bp = Blueprint('activities', __name__)
 UPLOAD_FOLDER_ACTIVITIES = 'static/uploads/activities'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
+UBICACIONES = [
+    {"nombre": "Salón de Actos", "aforo": 300},
+    {"nombre": "Auditorio", "aforo": 150},
+    {"nombre": "Sala de Reuniones A", "aforo": 30},
+    {"nombre": "Sala de Reuniones B", "aforo": 30},
+    {"nombre": "Aula Magna", "aforo": 200},
+    {"nombre": "Cafetería", "aforo": 100},
+    {"nombre": "Patio Central", "aforo": 500},
+    {"nombre": "Biblioteca", "aforo": 50},
+    {"nombre": "Sala de Informática", "aforo": 40},
+]
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# --- LISTADO DE ACTIVIDADES ---
 @activities_bp.route('/actividades')
 @login_required
 def activities_list():
     activities = Activity.query.filter_by(status='aprobada').order_by(Activity.date.asc()).all()
-    return render_template('activities.html', activities=activities)
+    return render_template('activities/activities.html', activities=activities)
 
 
-# --- DETALLE DE UNA ACTIVIDAD ---
 @activities_bp.route('/actividades/<int:activity_id>')
 @login_required
 def activity_detail(activity_id):
@@ -32,7 +42,6 @@ def activity_detail(activity_id):
     return render_template('activities/activity_detail.html', activity=activity, ya_inscrito=ya_inscrito, ya_like=ya_like)
 
 
-# --- CREAR ACTIVIDAD ---
 @activities_bp.route('/actividades/crear', methods=['GET', 'POST'])
 @login_required
 def activity_create():
@@ -62,7 +71,7 @@ def activity_create():
             location=location,
             capacity=capacity,
             image_filename=image_filename,
-            status='aprobada',
+            status='pendiente',
             user_id=current_user.id
         )
         db.session.add(new_activity)
@@ -70,10 +79,8 @@ def activity_create():
         flash('Actividad enviada para aprobación. El administrador la revisará pronto.', 'success')
         return redirect(url_for('activities.activities_list'))
 
-    return render_template('activities/activity_create.html')
+    return render_template('activities/activity_create.html', ubicaciones=UBICACIONES)
 
-
-# --- INSCRIBIRSE / DESINSCRIBIRSE ---
 @activities_bp.route('/actividades/<int:activity_id>/inscribirse', methods=['POST'])
 @login_required
 def activity_register(activity_id):
@@ -95,7 +102,6 @@ def activity_register(activity_id):
     return redirect(url_for('activities.activity_detail', activity_id=activity_id))
 
 
-# --- LIKE / UNLIKE ---
 @activities_bp.route('/actividades/<int:activity_id>/like', methods=['POST'])
 @login_required
 def activity_like(activity_id):
@@ -110,7 +116,6 @@ def activity_like(activity_id):
     return redirect(url_for('activities.activity_detail', activity_id=activity_id))
 
 
-# --- COMENTAR ---
 @activities_bp.route('/actividades/<int:activity_id>/comentar', methods=['POST'])
 @login_required
 def activity_comment(activity_id):
@@ -122,7 +127,6 @@ def activity_comment(activity_id):
     return redirect(url_for('activities.activity_detail', activity_id=activity_id))
 
 
-# --- PANEL ADMIN ---
 @activities_bp.route('/actividades/admin')
 @login_required
 def activity_admin():
@@ -130,10 +134,9 @@ def activity_admin():
         flash('No tienes permiso para acceder aquí.', 'danger')
         return redirect(url_for('activities.activities_list'))
     pendientes = Activity.query.filter_by(status='pendiente').order_by(Activity.created_at.desc()).all()
-    return render_template('activity_admin.html', pendientes=pendientes)
+    return render_template('activities/activity_admin.html', pendientes=pendientes)
 
 
-# --- APROBAR / RECHAZAR ---
 @activities_bp.route('/actividades/<int:activity_id>/moderar', methods=['POST'])
 @login_required
 def activity_moderar(activity_id):
@@ -154,7 +157,7 @@ def activity_moderar(activity_id):
     db.session.commit()
     return redirect(url_for('activities.activity_admin'))
 
-# --- EDITAR ACTIVIDAD ---
+
 @activities_bp.route('/actividades/<int:activity_id>/editar', methods=['GET', 'POST'])
 @login_required
 def activity_edit(activity_id):
@@ -180,8 +183,14 @@ def activity_edit(activity_id):
                 file.save(os.path.join(UPLOAD_FOLDER_ACTIVITIES, filename))
                 activity.image_filename = filename
 
+        # Si es estudiante, vuelve a pendiente al editar
+        if current_user.role == 'estudiante':
+            activity.status = 'pendiente'
+            flash('Actividad editada y enviada para aprobación de nuevo.', 'success')
+        else:
+            flash('Actividad actualizada correctamente.', 'success')
+
         db.session.commit()
-        flash('Actividad actualizada correctamente.', 'success')
         return redirect(url_for('activities.activity_detail', activity_id=activity_id))
 
-    return render_template('activities/activity_edit.html', activity=activity)
+    return render_template('activities/activity_edit.html', activity=activity, ubicaciones=UBICACIONES)
