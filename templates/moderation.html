@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Moderación Global{% endblock %}
+
+{% block content %}
+<style>
+    .tab-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .tab-buttons { display: flex; gap: 0.5rem; border-bottom: 2px solid #2e7d32; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .tab-btn { 
+        padding: 10px 20px; cursor: pointer; background: #eee; border: none; 
+        border-radius: 8px 8px 0 0; font-weight: bold; color: #555; font-size: 1rem;
+    }
+    .tab-btn.active { background: #2e7d32; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card-mod { background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; }
+</style>
+
+<div class="tab-container">
+    <h2 style="color: #2e7d32; margin-bottom: 0.5rem;">🛡️ Panel de Moderación Global</h2>
+    <p style="color: #999; margin-bottom: 2rem;">Gestiona todo el contenido y los reportes del portal.</p>
+
+    <div class="tab-buttons">
+        <button class="tab-btn active" onclick="openTab('actividades', this)">📅 Actividades</button>
+        <button class="tab-btn" onclick="openTab('anuncios', this)">📢 Anuncios</button>
+        <button class="tab-btn" onclick="openTab('apuntes', this)">📚 Apuntes</button>
+        <button class="tab-btn" onclick="openTab('resenas', this)">💬 Reseñas</button>
+        <button class="tab-btn" onclick="openTab('incidencias', this)">🚨 Incidencias</button>
+    </div>
+
+    <div id="actividades" class="tab-content active">
+        {% if actividades %}
+            {% for activity in actividades %}
+            <div class="card-mod" style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                {% if activity.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/activities/' + activity.image_filename) }}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+                {% else %}
+                    <div style="width: 120px; height: 90px; background: linear-gradient(135deg, #a5d6a7, #2e7d32); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0;">📅</div>
+                {% endif %}
+                <div style="flex: 1;">
+                    <h3 style="margin: 0 0 0.5rem 0; color: #2e7d32;">{{ activity.title }}</h3>
+                    <p style="color: #555; margin: 0 0 0.5rem 0; font-size: 0.9rem;">{{ activity.description }}</p>
+                    <p style="color: #999; font-size: 0.85rem; margin: 0 0 0.5rem 0;">
+                        📍 {{ activity.location }} &nbsp;|&nbsp; 🗓️ {{ activity.date.strftime('%d/%m/%Y %H:%M') }} &nbsp;|&nbsp; 👤 {{ activity.user.name }}
+                    </p>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <form method="post" action="{{ url_for('activities.activity_moderar', activity_id=activity.id) }}">
+                            <input type="hidden" name="accion" value="aprobar">
+                            <button type="submit" class="btn-create">✅ Aprobar</button>
+                        </form>
+                        <form method="post" action="{{ url_for('activities.activity_moderar', activity_id=activity.id) }}">
+                            <input type="hidden" name="accion" value="rechazar">
+                            <button type="submit" class="btn-create" style="background: #e53935;">❌ Rechazar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 3rem; color: #999;"><p style="font-size: 3rem;">✅</p><p>No hay actividades pendientes.</p></div>
+        {% endif %}
+    </div>
+
+    <div id="anuncios" class="tab-content">
+        {% if anuncios %}
+            {% for anuncio in anuncios %}
+            <div class="card-mod">
+                <h3 style="margin: 0 0 0.5rem 0; color: #2e7d32;">{{ anuncio.title }}</h3>
+                <p style="color: #555; margin: 0 0 0.5rem 0; font-size: 0.9rem;">{{ anuncio.content }}</p>
+                <p style="color: #999; font-size: 0.85rem; margin: 0 0 0.5rem 0;">
+                    ⏳ Caduca: {{ anuncio.expires_at.strftime('%d/%m/%Y') }} &nbsp;|&nbsp; 👤 {{ anuncio.user.name }}
+                </p>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <form method="post" action="{{ url_for('ad_moderar', ad_id=anuncio.id) }}">
+                        <input type="hidden" name="accion" value="aprobar">
+                        <button type="submit" class="btn-create">✅ Aprobar</button>
+                    </form>
+                    <form method="post" action="{{ url_for('ad_moderar', ad_id=anuncio.id) }}">
+                        <input type="hidden" name="accion" value="rechazar">
+                        <button type="submit" class="btn-create" style="background: #e53935;">❌ Rechazar</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 3rem; color: #999;"><p style="font-size: 3rem;">✅</p><p>No hay anuncios pendientes.</p></div>
+        {% endif %}
+    </div>
+
+    <div id="apuntes" class="tab-content">
+        {% if documentos %}
+            {% for doc in documentos %}
+            <div class="card-mod">
+                <h3 style="margin: 0 0 0.5rem 0; color: #2e7d32;">📄 {{ doc.title }}</h3>
+                <p style="color: #555; margin: 0 0 0.5rem 0; font-size: 0.9rem;">Asignatura: <strong>{{ doc.subject.name }}</strong></p>
+                <p style="color: #999; font-size: 0.85rem; margin: 0 0 0.5rem 0;">👤 {{ doc.user.name }} &nbsp;|&nbsp; 🗓️ {{ doc.uploaded_at.strftime('%d/%m/%Y') }}</p>
+                
+                <a href="{{ url_for('subjects.download_document', doc_id=doc.id) }}" target="_blank" style="color: #1976d2; font-weight: bold; text-decoration: none; font-size: 0.9rem; display: inline-block; margin-bottom: 0.5rem;">⬇️ Descargar archivo para revisar</a>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <form method="post" action="{{ url_for('doc_moderar', doc_id=doc.id) }}">
+                        <input type="hidden" name="accion" value="aprobar">
+                        <button type="submit" class="btn-create">✅ Aprobar</button>
+                    </form>
+                    <form method="post" action="{{ url_for('doc_moderar', doc_id=doc.id) }}">
+                        <input type="hidden" name="accion" value="rechazar">
+                        <button type="submit" class="btn-create" style="background: #e53935;">❌ Rechazar</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 3rem; color: #999;"><p style="font-size: 3rem;">✅</p><p>No hay apuntes pendientes.</p></div>
+        {% endif %}
+    </div>
+
+    <div id="resenas" class="tab-content">
+        {% if resenas %}
+            {% for review in resenas %}
+            <div class="card-mod">
+                <h3 style="margin: 0 0 0.5rem 0; color: #2e7d32;">Asignatura: {{ review.subject.name }}</h3>
+                <p style="color: #2e7d32; font-weight: bold;">Dificultad: ⭐ {{ review.difficulty }}/5</p>
+                <p style="color: #555; margin: 0 0 0.5rem 0; font-style: italic;">"{{ review.content or 'Sin texto' }}"</p>
+                <p style="color: #999; font-size: 0.85rem; margin: 0 0 0.5rem 0;">👤 {{ review.user.name }}</p>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <form method="post" action="{{ url_for('review_moderar', review_id=review.id) }}">
+                        <input type="hidden" name="accion" value="aprobar">
+                        <button type="submit" class="btn-create">✅ Aprobar</button>
+                    </form>
+                    <form method="post" action="{{ url_for('review_moderar', review_id=review.id) }}">
+                        <input type="hidden" name="accion" value="rechazar">
+                        <button type="submit" class="btn-create" style="background: #e53935;">❌ Rechazar</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 3rem; color: #999;"><p style="font-size: 3rem;">✅</p><p>No hay reseñas pendientes.</p></div>
+        {% endif %}
+    </div>
+
+    <div id="incidencias" class="tab-content">
+        {% if incidencias %}
+            {% for inc in incidencias %}
+            <div class="card-mod" style="border-left: 5px solid {% if inc.status == 'Abierta' %}#d32f2f{% else %}#f57c00{% endif %};">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <h3 style="margin: 0 0 0.5rem 0; color: #333;">🚨 {{ inc.title }}</h3>
+                    <span style="background: {% if inc.status == 'Abierta' %}#ffebee; color: #d32f2f{% else %}#fff3e0; color: #f57c00{% endif %}; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem;">
+                        {{ inc.status }}
+                    </span>
+                </div>
+                
+                <p style="color: #555; margin: 0 0 1rem 0; background: #f9f9f9; padding: 10px; border-radius: 6px;">{{ inc.description }}</p>
+                
+                <p style="color: #999; font-size: 0.85rem; margin: 0 0 0.5rem 0;">
+                    👤 <strong>Autor:</strong> {% if inc.user %}{{ inc.user.name }}{% else %}<span style="color: #d32f2f;">Anónimo 🕵️</span>{% endif %} &nbsp;|&nbsp; 
+                    🗓️ <strong>Fecha:</strong> {{ inc.created_at.strftime('%d/%m/%Y %H:%M') }}
+                </p>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    {% if inc.status == 'Abierta' %}
+                    <form method="post" action="{{ url_for('incident_moderar', inc_id=inc.id) }}">
+                        <input type="hidden" name="accion" value="proceso">
+                        <button type="submit" class="btn-create" style="background: #f57c00;">🔄 Marcar "En Proceso"</button>
+                    </form>
+                    {% endif %}
+                    <form method="post" action="{{ url_for('incident_moderar', inc_id=inc.id) }}">
+                        <input type="hidden" name="accion" value="cerrar">
+                        <button type="submit" class="btn-create">✅ Resolver y Cerrar</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 3rem; color: #999;"><p style="font-size: 3rem;">🎉</p><p>¡Todo en orden! No hay incidencias abiertas.</p></div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+function openTab(tabName, element) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) { 
+        tabcontent[i].style.display = "none"; 
+    }
+    tablinks = document.getElementsByClassName("tab-btn");
+    for (i = 0; i < tablinks.length; i++) { 
+        tablinks[i].className = tablinks[i].className.replace(" active", ""); 
+    }
+    document.getElementById(tabName).style.display = "block";
+    element.className += " active";
+}
+</script>
+{% endblock %}

@@ -24,19 +24,22 @@ def list_subjects():
 @login_required
 def subject_detail(subject_id):
     subject = Subject.query.get_or_404(subject_id)
-    return render_template("subjects/detail.html", subject=subject)
+    # ¡Filtramos para la vista pública!
+    docs_aprobados = Document.query.filter_by(subject_id=subject_id, status='aprobado').all()
+    reviews_aprobadas = Review.query.filter_by(subject_id=subject_id, status='aprobado').order_by(Review.created_at.desc()).all()
+    
+    return render_template("subjects/detail.html", subject=subject, docs=docs_aprobados, reviews=reviews_aprobadas)
 
 @subjects_bp.route("/asignatura/<int:subject_id>/review", methods=["POST"])
 @login_required
 def add_review(subject_id):
-    # AHORA ACEPTA QUE ESTÉ VACÍO, PONIENDO "" POR DEFECTO Y ELIMINANDO ESPACIOS
     content = request.form.get("content", "").strip()
     difficulty = int(request.form.get("difficulty"))
     
-    nueva_resena = Review(content=content, difficulty=difficulty, user_id=current_user.id, subject_id=subject_id)
+    nueva_resena = Review(content=content, difficulty=difficulty, user_id=current_user.id, subject_id=subject_id, status="pendiente")
     db.session.add(nueva_resena)
     db.session.commit()
-    flash("¡Valoración publicada correctamente!", "success")
+    flash("¡Valoración enviada! Un moderador la revisará pronto.", "info")
     return redirect(url_for("subjects.subject_detail", subject_id=subject_id))
 
 @subjects_bp.route("/asignatura/<int:subject_id>/upload", methods=["POST"])
@@ -59,10 +62,10 @@ def upload_document(subject_id):
             
         file.save(os.path.join(upload_path, unique_filename))
         
-        nuevo_doc = Document(title=title, filename=unique_filename, user_id=current_user.id, subject_id=subject_id)
+        nuevo_doc = Document(title=title, filename=unique_filename, user_id=current_user.id, subject_id=subject_id, status="pendiente")
         db.session.add(nuevo_doc)
         db.session.commit()
-        flash("Apunte subido correctamente. ¡Gracias por aportar a la comunidad!", "success")
+        flash("Apunte subido correctamente. Se publicará cuando un moderador lo apruebe.", "info")
         
     return redirect(url_for("subjects.subject_detail", subject_id=subject_id))
 

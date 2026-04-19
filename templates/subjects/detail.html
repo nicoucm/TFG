@@ -29,7 +29,7 @@
     <h4 style="border-bottom: 2px solid #2e7d32; padding-bottom: 8px; margin-bottom: 15px;">📄 Apuntes Compartidos</h4>
     
     <table class="tabla-centrada">
-        {% for doc in subject.documents %}
+        {% for doc in docs %}
         <tr>
             <td>
                 <strong style="color: #1b5e20;">{{ doc.title }}</strong><br>
@@ -57,7 +57,7 @@
 <div class="form-container">
     <h4 style="border-bottom: 2px solid #2e7d32; padding-bottom: 8px; margin-bottom: 15px;">💬 Reseñas de Compañeros</h4>
     
-    {% for review in subject.reviews %}
+    {% for review in reviews %}
     <div style="background: white; border: 1px solid #e8f5e8; padding: 15px; border-radius: 8px; margin-bottom: 12px;">
         <strong style="color: #1b5e20;">{{ review.user.name }}</strong> <span style="color: #2e7d32;">(⭐ {{ review.difficulty }}/5)</span>
         <p style="margin: 8px 0; color: #444; line-height: 1.5;">

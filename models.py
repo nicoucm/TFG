@@ -29,9 +29,12 @@ class Announcement(db.Model):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     expires_at = db.Column(db.DateTime, nullable=False)
+    
+    # --- NUEVA COLUMNA DE MODERACIÓN ---
+    status = db.Column(db.String(20), nullable=False, default="pendiente") # pendiente / aprobado / rechazado
+    
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     user = db.relationship("User", backref="announcements")
-
 class Incident(db.Model):
     __tablename__ = "incidents"
     id = db.Column(db.Integer, primary_key=True)
@@ -54,9 +57,11 @@ class Subject(db.Model):
 
     @property
     def average_difficulty(self):
-        if not self.reviews: return 0.0
-        total = sum([r.difficulty for r in self.reviews])
-        return round(total / len(self.reviews), 1)
+        # ¡NUEVO! Solo calculamos la media con las reseñas aprobadas
+        aprobadas = [r for r in self.reviews if r.status == 'aprobado']
+        if not aprobadas: return 0.0
+        total = sum([r.difficulty for r in aprobadas])
+        return round(total / len(aprobadas), 1)
 
 class Review(db.Model):
     __tablename__ = "reviews"
@@ -64,6 +69,10 @@ class Review(db.Model):
     content = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.Integer, nullable=False) 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # --- COLUMNA DE MODERACIÓN ---
+    status = db.Column(db.String(20), nullable=False, default="pendiente")
+    
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=False)
     user = db.relationship("User", backref="reviews_user")
@@ -75,10 +84,13 @@ class Document(db.Model):
     filename = db.Column(db.String(255), nullable=False)
     uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
     downloads = db.Column(db.Integer, default=0)
+    
+    # --- COLUMNA DE MODERACIÓN ---
+    status = db.Column(db.String(20), nullable=False, default="pendiente")
+    
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=False)
     user = db.relationship("User", backref="documents_user")
-
 
 # --- MODELOS DE ACTIVIDADES ---
 class Activity(db.Model):

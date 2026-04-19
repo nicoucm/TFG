@@ -155,7 +155,9 @@ def activity_moderar(activity_id):
         flash(f'Actividad "{activity.title}" rechazada.', 'danger')
 
     db.session.commit()
-    return redirect(url_for('activities.activity_admin'))
+    
+
+    return redirect(url_for('moderation_panel'))
 
 
 @activities_bp.route('/actividades/<int:activity_id>/editar', methods=['GET', 'POST'])
