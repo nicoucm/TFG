@@ -4,24 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma Comunitaria Universitaria</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}?v=2">
+    {% block custom_css %}{% endblock %}
 </head>
 <body>
-    <header style="background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('{{ url_for('static', filename='img/ucm2.jpg') }}') center top / cover no-repeat; min-height: 420px; padding: 0; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 2.5rem 4rem; background: transparent; height: 180px; position: relative; z-index: 2;">
-            <h1 style="margin: 0; font-size: 3.4rem; color: white; text-shadow: 2px 2px 12px rgba(0,0,0,0.9);">
-                Plataforma comunitaria universitaria
-            </h1>
+    <header class="main-header">
+        <div class="header-content">
+            <h1>Plataforma comunitaria universitaria</h1>
             <a href="https://informatica.ucm.es" target="_blank">
-                <img src="{{ url_for('static', filename='img/ucm.jpg') }}" 
-                     alt="Facultad de Informática UCM" 
-                     style="height: 160px; width: auto; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 5px solid rgba(255,255,255,0.4);">
+                <img src="{{ url_for('static', filename='img/ucm.jpg') }}" alt="Facultad de Informática UCM" class="header-logo">
             </a>
         </div>
 
-        <nav style="text-align: center; padding: 1rem 0 3rem 0; position: relative; z-index: 2;">
-            <div style="display: inline-flex; gap: 2.2rem; flex-wrap: wrap; justify-content: center;">
+        <nav class="main-nav">
+            <div class="nav-links">
                 <a href="{{ url_for('home') }}">Inicio</a>
                 <a href="{{ url_for('subjects.list_subjects') }}">Asignaturas</a>
                 <a href="{{ url_for('incidents') }}">Incidencias</a>
@@ -32,7 +28,8 @@
                     <a href="{{ url_for('moderation_panel') }}">🛡️ Moderación</a>
                 {% endif %}
             </div>
-            <div class="auth-links" style="margin-top: 1.5rem;">
+            
+            <div class="auth-links">
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('logout') }}">Cerrar sesión ({{ current_user.name }})</a>
                 {% else %}
@@ -54,7 +51,6 @@
         {% block content %}{% endblock %}
     </main>
 
-
     <script>
     // Al cargar cualquier página, comprobamos si el modo accesible está guardado
     document.addEventListener("DOMContentLoaded", function() {
@@ -62,6 +58,6 @@
             document.body.classList.add('tema-accesible');
         }
     });
-</script>
+    </script>
 </body>
 </html>

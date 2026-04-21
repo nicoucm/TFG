@@ -2,14 +2,17 @@
 
 {% block title %}Iniciar sesión{% endblock %}
 
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
 {% block content %}
+<div id="opciones-login" class="login-wrapper">
+    <h2 class="login-title">Bienvenido a UniTogether</h2>
+    <p class="login-subtitle">Accede a la plataforma comunitaria de la UCM</p>
 
-<div id="opciones-login" style="text-align: center; margin: 4rem auto; max-width: 500px;">
-    <h2 style="margin-bottom: 0.5rem; color: #2e7d32;">Bienvenido a UniTogether</h2>
-    <p style="color: #666; margin-bottom: 2.5rem; font-size: 1rem;">Accede a la plataforma comunitaria de la UCM</p>
-
-    <a href="{{ url_for('login_google') }}" class="btn-google" style="padding: 14px 32px; font-size: 1.1rem; border-radius: 8px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" style="vertical-align: middle; margin-right: 12px;">
+    <a href="{{ url_for('login_google') }}" class="btn-google">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" class="svg-icon">
             <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
             <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
             <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
@@ -17,38 +20,34 @@
         </svg>
         Acceder con cuenta UCM
     </a>
-    <p style="margin-top: 12px; font-size: 0.85rem; color: #666;">(Opción recomendada para alumnos)</p>
+    <p class="help-text">(Opción recomendada para alumnos)</p>
 
-    <div style="display: flex; align-items: center; margin: 1.5rem 0;">
-        <hr style="flex-grow: 1; border: 0; border-top: 1px solid #ccc;">
-        <span style="margin: 0 1rem; color: #999; font-size: 0.9rem;">o</span>
-        <hr style="flex-grow: 1; border: 0; border-top: 1px solid #ccc;">
+    <div class="separator-container">
+        <hr class="separator-line">
+        <span class="separator-text">o</span>
+        <hr class="separator-line">
     </div>
 
-    <button onclick="toggleFormAdmin()" class="btn-create" style="width: 100%; padding: 14px; font-size: 1.1rem; border-radius: 8px;">
-        Iniciar sesión
+    <button onclick="toggleFormAdmin()" class="btn-create btn-login-admin">
+        Iniciar sesión como administrador
     </button>
 </div>
 
-<div id="form-admin" style="display: none; max-width: 400px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
-    <h3 style="text-align: center; margin-bottom: 1.5rem; color: #2e7d32;">Acceso administrador</h3>
+<div id="form-admin" class="admin-form-container">
+    <h3 class="admin-form-title">Acceso administrador</h3>
 
     <form method="post">
         <div style="margin-bottom: 1rem;">
-            <label for="email" style="display: block; margin-bottom: 0.4rem; font-weight: 600; color: #444;">Email</label>
-            <input type="email" id="email" name="email" required
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; transition: border 0.2s;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+            <label for="email" class="login-label">Email</label>
+            <input type="email" id="email" name="email" required class="login-input">
         </div>
 
         <div style="margin-bottom: 1.5rem;">
-            <label for="password" style="display: block; margin-bottom: 0.4rem; font-weight: 600; color: #444;">Contraseña</label>
-            <input type="password" id="password" name="password" required
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; transition: border 0.2s;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+            <label for="password" class="login-label">Contraseña</label>
+            <input type="password" id="password" name="password" required class="login-input">
         </div>
 
-        <button type="submit" class="btn-create" style="width: 100%; padding: 12px; font-size: 1rem;">
+        <button type="submit" class="btn-create btn-submit-admin">
             Entrar
         </button>
     </form>
@@ -60,28 +59,4 @@
         document.getElementById('opciones-login').style.display = 'none';
     }
 </script>
-
-<style>
-    .btn-google {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: #fff;
-        border: 1px solid #dadce0;
-        color: #3c4043;
-        padding: 10px 24px;
-        text-decoration: none;
-        font-weight: 500;
-        font-family: 'Open Sans', sans-serif;
-        border-radius: 4px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        transition: all 0.2s;
-    }
-    .btn-google:hover {
-        background-color: #f8faff;
-        border-color: #c8e6c9;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-        color: #2e7d32;
-    }
-</style>
 {% endblock %}

@@ -4,45 +4,40 @@
     {% if mode == 'editar' %}Editar anuncio{% else %}Nuevo anuncio{% endif %}
 {% endblock %}
 
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ads.css') }}">
+{% endblock %}
+
 {% block content %}
-<h2>
-    {% if mode == 'editar' %}Editar anuncio{% else %}Nuevo anuncio{% endif %}
-</h2>
+<div class="form-container">
+    <h2 style="color: #2e7d32; margin-bottom: 1.5rem; text-align: center;">
+        {% if mode == 'editar' %}✏️ Editar anuncio{% else %}📝 Nuevo anuncio{% endif %}
+    </h2>
 
-<form method="post">
-    <label for="title">Título</label><br>
-    <input
-        type="text"
-        id="title"
-        name="title"
-        value="{{ anuncio.title if anuncio is defined else '' }}"
-        required
-    ><br><br>
+    <form method="post">
+        <div>
+            <label for="title" class="form-label">Título</label>
+            <input type="text" id="title" name="title" value="{{ anuncio.title if anuncio is defined else '' }}" required class="form-control">
+        </div>
 
-    <label for="content">Contenido</label><br>
-    <textarea
-        id="content"
-        name="content"
-        rows="5"
-        cols="60"
-        required
-    >{{ anuncio.content if anuncio is defined else '' }}</textarea><br><br>
+        <div>
+            <label for="content" class="form-label">Contenido</label>
+            <textarea id="content" name="content" rows="5" required class="form-control">{{ anuncio.content if anuncio is defined else '' }}</textarea>
+        </div>
 
-    <label for="expires_at">Fecha de caducidad</label><br>
-    <input
-        type="date"
-        id="expires_at"
-        name="expires_at"
-        value="{% if anuncio is defined %}{{ anuncio.expires_at.strftime('%Y-%m-%d') }}{% endif %}"
-        required
-    ><br><br>
+        <div>
+            <label for="expires_at" class="form-label">Fecha de caducidad</label>
+            <input type="date" id="expires_at" name="expires_at" value="{% if anuncio is defined %}{{ anuncio.expires_at.strftime('%Y-%m-%d') }}{% endif %}" required class="form-control">
+        </div>
 
-    <button type="submit">
-        {% if mode == 'editar' %}Guardar cambios{% else %}Crear anuncio{% endif %}
-    </button>
-</form>
-
-<p style="margin-top: 15px;">
-    <a href="{{ url_for('ads') }}">⬅ Volver al tablón</a>
-</p>
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <button type="submit" class="btn-create" style="flex: 1;">
+                {% if mode == 'editar' %}Guardar cambios{% else %}Crear anuncio{% endif %}
+            </button>
+            <a href="{{ url_for('ads') }}" class="btn-outline" style="text-align: center; display: flex; align-items: center; justify-content: center; flex: 1;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
 {% endblock %}

@@ -153,20 +153,70 @@ body::after {
 body::before {
     left: 0;
     /* Aquí va la imagen de la izquierda */
-    background-image: url('img/hall.jpg');
+    background-image: url('../img/hall.jpg');
 }
 
 /* Lateral DERECHO */
 body::after {
     right: 0;
     /* CAMBIA 'biblioteca.jpg' por el nombre de tu segunda foto */
-    background-image: url('img/pasillo.jpg'); 
+    background-image: url('../img/pasillo.jpg'); 
 }
 
 /* Asegurar que el contenido vaya por encima */
 main, header, nav {
     position: relative;
     z-index: 1;
+}
+
+/* =========================================================
+   ESTILOS ESPECÍFICOS DEL HEADER (Extraídos de base.html)
+   ========================================================= */
+
+.main-header {
+    /* Como el CSS está en la carpeta css/, la ruta a la imagen sube un nivel con ../ */
+    background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), url('../img/ucm2.jpg') center top / cover no-repeat;
+    min-height: 420px;
+    padding: 0;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5rem 4rem;
+    background: transparent;
+    height: 180px;
+    position: relative;
+    z-index: 2;
+}
+
+.header-logo {
+    height: 160px;
+    width: auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    border: 5px solid rgba(255,255,255,0.4);
+}
+
+.main-nav {
+    text-align: center;
+    padding: 1rem 0 3rem 0;
+    position: relative;
+    z-index: 2;
+}
+
+.nav-links {
+    display: inline-flex;
+    gap: 2.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.auth-links {
+    margin-top: 1.5rem;
 }
 
 

@@ -2,20 +2,12 @@
 
 {% block title %}Panel de Moderación Global{% endblock %}
 
-{% block content %}
-<style>
-    .tab-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-    .tab-buttons { display: flex; gap: 0.5rem; border-bottom: 2px solid #2e7d32; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .tab-btn { 
-        padding: 10px 20px; cursor: pointer; background: #eee; border: none; 
-        border-radius: 8px 8px 0 0; font-weight: bold; color: #555; font-size: 1rem;
-    }
-    .tab-btn.active { background: #2e7d32; color: white; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .card-mod { background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; }
-</style>
 
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/moderation.css') }}">
+{% endblock %}
+
+{% block content %}
 <div class="tab-container">
     <h2 style="color: #2e7d32; margin-bottom: 0.5rem;">🛡️ Panel de Moderación Global</h2>
     <p style="color: #999; margin-bottom: 2rem;">Gestiona todo el contenido y los reportes del portal.</p>

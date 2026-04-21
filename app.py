@@ -1,7 +1,7 @@
 import os
 import pathlib
 import requests
-from flask import Flask, render_template, redirect, url_for, request, flash, session
+from flask import Flask, render_template, redirect, url_for, request, flash, session, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -326,6 +326,87 @@ def ad_delete(ad_id):
     flash("Anuncio eliminado.", "success")
     return redirect(url_for("ads"))
 
+@app.route("/moderacion")
+@login_required
+def moderation_panel():
+    if current_user.role != 'admin':
+        abort(403)
+        
+    pendientes_actividades = Activity.query.filter_by(status='pendiente').order_by(Activity.created_at.desc()).all()
+    pendientes_anuncios = Announcement.query.filter_by(status='pendiente').order_by(Announcement.created_at.desc()).all()
+    pendientes_docs = Document.query.filter_by(status='pendiente').order_by(Document.uploaded_at.desc()).all()
+    pendientes_reviews = Review.query.filter_by(status='pendiente').order_by(Review.created_at.desc()).all()
+    incidencias_abiertas = Incident.query.filter(Incident.status != 'Cerrada').order_by(Incident.created_at.desc()).all()
+    
+    return render_template("moderation.html", 
+                           actividades=pendientes_actividades, 
+                           anuncios=pendientes_anuncios,
+                           documentos=pendientes_docs,
+                           resenas=pendientes_reviews,
+                           incidencias=incidencias_abiertas)
+
+
+# --- RUTAS DE ACCIÓN DEL PANEL DE MODERACIÓN ---
+
+@app.route("/anuncios/<int:ad_id>/moderar", methods=["POST"])
+@login_required
+def ad_moderar(ad_id):
+    if current_user.role != 'admin': abort(403)
+    anuncio = Announcement.query.get_or_404(ad_id)
+    accion = request.form.get('accion')
+    if accion == 'aprobar':
+        anuncio.status = 'aprobado'
+        flash(f'Anuncio "{anuncio.title}" aprobado.', 'success')
+    elif accion == 'rechazar':
+        anuncio.status = 'rechazado'
+        flash(f'Anuncio "{anuncio.title}" rechazado.', 'danger')
+    db.session.commit()
+    return redirect(url_for('moderation_panel'))
+
+@app.route("/documentos/<int:doc_id>/moderar", methods=["POST"])
+@login_required
+def doc_moderar(doc_id):
+    if current_user.role != 'admin': abort(403)
+    doc = Document.query.get_or_404(doc_id)
+    accion = request.form.get('accion')
+    if accion == 'aprobar':
+        doc.status = 'aprobado'
+        flash(f'Apunte "{doc.title}" aprobado.', 'success')
+    elif accion == 'rechazar':
+        doc.status = 'rechazado'
+        flash(f'Apunte "{doc.title}" rechazado.', 'danger')
+    db.session.commit()
+    return redirect(url_for('moderation_panel'))
+
+@app.route("/resenas/<int:review_id>/moderar", methods=["POST"])
+@login_required
+def review_moderar(review_id):
+    if current_user.role != 'admin': abort(403)
+    review = Review.query.get_or_404(review_id)
+    accion = request.form.get('accion')
+    if accion == 'aprobar':
+        review.status = 'aprobado'
+        flash('Reseña aprobada.', 'success')
+    elif accion == 'rechazar':
+        review.status = 'rechazado'
+        flash('Reseña rechazada.', 'danger')
+    db.session.commit()
+    return redirect(url_for('moderation_panel'))
+
+@app.route("/incidencias/<int:inc_id>/moderar", methods=["POST"])
+@login_required
+def incident_moderar(inc_id):
+    if current_user.role != 'admin': abort(403)
+    inc = Incident.query.get_or_404(inc_id)
+    accion = request.form.get('accion')
+    if accion == 'proceso':
+        inc.status = 'En proceso'
+        flash('Incidencia marcada como "En proceso".', 'info')
+    elif accion == 'cerrar':
+        inc.status = 'Cerrada'
+        flash('Incidencia cerrada y resuelta.', 'success')
+    db.session.commit()
+    return redirect(url_for('moderation_panel'))
 # --- CONEXIÓN DEL BLUEPRINT DE ASIGNATURAS ---
 from routes_subjects import subjects_bp
 app.register_blueprint(subjects_bp)

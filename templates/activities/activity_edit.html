@@ -2,73 +2,55 @@
 
 {% block title %}Editar Actividad{% endblock %}
 
-{% block content %}
-<div style="max-width: 600px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/activities.css') }}">
+{% endblock %}
 
-    <h2 style="color: #2e7d32; margin-bottom: 0.5rem;">✏️ Editar actividad</h2>
-    <p style="color: #999; font-size: 0.9rem; margin-bottom: 2rem;">Modifica los campos que quieras actualizar.</p>
+{% block content %}
+<div class="form-container" style="max-width: 600px;">
+
+    <h2 class="form-title">✏️ Editar actividad</h2>
+    <p class="form-subtitle">Modifica los campos que quieras actualizar.</p>
 
     <form method="post" enctype="multipart/form-data">
-
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Título *</label>
-            <input type="text" name="title" required value="{{ activity.title }}"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+        <div>
+            <label class="form-label">Título *</label>
+            <input type="text" name="title" required value="{{ activity.title }}" class="form-control">
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Descripción *</label>
-            <textarea name="description" required rows="4"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; resize: vertical;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">{{ activity.description }}</textarea>
+        <div>
+            <label class="form-label">Descripción *</label>
+            <textarea name="description" required rows="4" class="form-control">{{ activity.description }}</textarea>
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Fecha y hora *</label>
-            <input type="datetime-local" name="date" required value="{{ activity.date.strftime('%Y-%m-%dT%H:%M') }}"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+        <div>
+            <label class="form-label">Fecha y hora *</label>
+            <input type="datetime-local" name="date" required value="{{ activity.date.strftime('%Y-%m-%dT%H:%M') }}" class="form-control">
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Ubicación *</label>
-            <select name="location" required id="location-select"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'"
-                onchange="actualizarAforo(this)">
-                <option value="">-- Selecciona una ubicación --</option>
-                {% for u in ubicaciones %}
-                    <option value="{{ u.nombre }}" data-aforo="{{ u.aforo }}" {{ 'selected' if activity.location == u.nombre }}>{{ u.nombre }} (aforo: {{ u.aforo }})</option>
-                {% endfor %}
-            </select>
+
+        <div>
+            <label class="form-label">Lugar *</label>
+            <input type="text" name="location" required value="{{ activity.location }}" class="form-control">
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Aforo máximo</label>
-            <input type="number" name="capacity" id="capacity" min="1" readonly value="{{ activity.capacity or '' }}"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: #f5f5f5;">
-            <p style="color: #999; font-size: 0.8rem; margin-top: 0.3rem;">Se rellena automáticamente según la ubicación.</p>
+        <div>
+            <label class="form-label">Aforo máximo <span style="color:#999; font-weight:400;">(opcional)</span></label>
+            <input type="number" name="capacity" min="1" value="{{ activity.capacity or '' }}" class="form-control">
         </div>
 
-        <div style="margin-bottom: 2rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Imagen o cartel <span style="color:#999; font-weight:400;">(opcional, deja vacío para mantener la actual)</span></label>
+        <div>
+            <label class="form-label">Imagen o cartel <span style="color:#999; font-weight:400;">(opcional, deja vacío para mantener la actual)</span></label>
             {% if activity.image_filename %}
                 <img src="{{ url_for('static', filename='uploads/activities/' + activity.image_filename) }}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem;">
             {% endif %}
-            <input type="file" name="image" accept="image/*"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+            <input type="file" name="image" accept="image/*" class="form-control">
         </div>
 
-        <div style="display: flex; gap: 1rem;">
-            <button type="submit" class="btn-create" style="flex: 1; padding: 12px; font-size: 1rem;">
-                Guardar cambios
-            </button>
-            <a href="{{ url_for('activities.activity_detail', activity_id=activity.id) }}" style="flex: 1; padding: 12px; text-align: center; border: 1px solid #ccc; border-radius: 8px; color: #666; text-decoration: none; font-size: 1rem;">
-                Cancelar
-            </a>
+        <div class="form-actions">
+            <button type="submit" class="btn-create btn-flex">Guardar cambios</button>
+            <a href="{{ url_for('activities.activity_detail', activity_id=activity.id) }}" class="btn-cancel">Cancelar</a>
         </div>
-
     </form>
 </div>
 
