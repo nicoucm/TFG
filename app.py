@@ -153,111 +153,10 @@ def incidents():
 def accessible_mode():
     return render_template("accessible.html")
 
-
-
-    from flask import abort
-
-# Asegúrate de importar Document y Review arriba:
-# from models import db, User, Announcement, Incident, Activity, Document, Review
-
-@app.route("/moderacion")
-@login_required
-def moderation_panel():
-    if current_user.role != 'admin':
-        abort(403)
-        
-    pendientes_actividades = Activity.query.filter_by(status='pendiente').order_by(Activity.created_at.desc()).all()
-    pendientes_anuncios = Announcement.query.filter_by(status='pendiente').order_by(Announcement.created_at.desc()).all()
-    pendientes_docs = Document.query.filter_by(status='pendiente').order_by(Document.uploaded_at.desc()).all()
-    pendientes_reviews = Review.query.filter_by(status='pendiente').order_by(Review.created_at.desc()).all()
-    
-    # ¡NUEVO! Buscamos las incidencias que NO estén cerradas
-    incidencias_abiertas = Incident.query.filter(Incident.status != 'Cerrada').order_by(Incident.created_at.desc()).all()
-    
-    return render_template("moderation.html", 
-                           actividades=pendientes_actividades, 
-                           anuncios=pendientes_anuncios,
-                           documentos=pendientes_docs,
-                           resenas=pendientes_reviews,
-                           incidencias=incidencias_abiertas) # Pasamos la nueva variable
-
-@app.route("/documentos/<int:doc_id>/moderar", methods=["POST"])
-@login_required
-def doc_moderar(doc_id):
-    if current_user.role != 'admin': abort(403)
-    doc = Document.query.get_or_404(doc_id)
-    accion = request.form.get('accion')
-    if accion == 'aprobar':
-        doc.status = 'aprobado'
-        flash(f'Apunte "{doc.title}" aprobado.', 'success')
-    elif accion == 'rechazar':
-        doc.status = 'rechazado' # Opcional: podrías eliminar el archivo físico aquí
-        flash(f'Apunte "{doc.title}" rechazado.', 'danger')
-    db.session.commit()
-    return redirect(url_for('moderation_panel'))
-
-@app.route("/resenas/<int:review_id>/moderar", methods=["POST"])
-@login_required
-def review_moderar(review_id):
-    if current_user.role != 'admin': abort(403)
-    review = Review.query.get_or_404(review_id)
-    accion = request.form.get('accion')
-    if accion == 'aprobar':
-        review.status = 'aprobado'
-        flash('Reseña aprobada.', 'success')
-    elif accion == 'rechazar':
-        review.status = 'rechazado'
-        flash('Reseña rechazada.', 'danger')
-    db.session.commit()
-    return redirect(url_for('moderation_panel'))
-
-@app.route("/anuncios/<int:ad_id>/moderar", methods=["POST"])
-@login_required
-def ad_moderar(ad_id):
-    if current_user.role != 'admin':
-        abort(403)
-
-    anuncio = Announcement.query.get_or_404(ad_id)
-    accion = request.form.get('accion')
-
-    if accion == 'aprobar':
-        anuncio.status = 'aprobado'
-        flash(f'Anuncio "{anuncio.title}" aprobado y publicado en el tablón.', 'success')
-    elif accion == 'rechazar':
-        anuncio.status = 'rechazado'
-        flash(f'Anuncio "{anuncio.title}" rechazado.', 'danger')
-
-    db.session.commit()
-    return redirect(url_for('moderation_panel'))
-
-# ¡NUEVA RUTA PARA GESTIONAR INCIDENCIAS!
-@app.route("/incidencias/<int:inc_id>/moderar", methods=["POST"])
-@login_required
-def incident_moderar(inc_id):
-    if current_user.role != 'admin':
-        abort(403)
-
-    inc = Incident.query.get_or_404(inc_id)
-    accion = request.form.get('accion')
-
-    if accion == 'proceso':
-        inc.status = 'En proceso'
-        flash('Incidencia marcada como "En proceso".', 'info')
-    elif accion == 'cerrar':
-        inc.status = 'Cerrada'
-        flash('Incidencia cerrada y resuelta.', 'success')
-
-    db.session.commit()
-    return redirect(url_for('moderation_panel'))
-
 @app.route("/anuncios")
 def ads():
-    # Aquí es donde buscamos SÓLO los aprobados
-    anuncios = Announcement.query.filter(
-        Announcement.expires_at >= datetime.utcnow(),
-        Announcement.status == 'aprobado'
-    ).order_by(Announcement.created_at.desc()).all()
-    
+    now = datetime.utcnow()
+    anuncios = Announcement.query.filter(Announcement.expires_at >= now).order_by(Announcement.created_at.desc()).all()
     return render_template("ads/ads.html", anuncios=anuncios)
 
 @app.route("/anuncios/nuevo", methods=["GET", "POST"])
@@ -269,13 +168,10 @@ def ad_create():
         expires_at_str = request.form["expires_at"]
         expires_at = datetime.strptime(expires_at_str, '%Y-%m-%d')
         
-        # Como en models.py el default="pendiente", no hace falta ponerlo aquí explícitamente,
-        # pero cambiamos el mensaje flash para que el alumno sepa qué ha pasado.
         nuevo_anuncio = Announcement(title=title, content=content, expires_at=expires_at, user_id=current_user.id)
         db.session.add(nuevo_anuncio)
         db.session.commit()
-        
-        flash("Anuncio enviado para revisión. Se publicará cuando un moderador lo apruebe.", "info")
+        flash("Anuncio publicado con éxito.", "success")
         return redirect(url_for("ads"))
         
     return render_template("ads/ad_form.html", mode="nuevo")
@@ -300,14 +196,8 @@ def ad_edit(ad_id):
         expires_at_str = request.form["expires_at"]
         anuncio.expires_at = datetime.strptime(expires_at_str, '%Y-%m-%d')
         
-        # EL PASO CLAVE: Si es un estudiante, lo volvemos a poner pendiente
-        if current_user.role == 'estudiante':
-            anuncio.status = 'pendiente'
-            flash("Anuncio editado. Tendrá que ser aprobado de nuevo por un moderador.", "info")
-        else:
-            flash("Anuncio actualizado correctamente.", "success")
-            
         db.session.commit()
+        flash("Anuncio actualizado correctamente.", "success")
         return redirect(url_for("ad_detail", ad_id=anuncio.id))
         
     return render_template("ads/ad_form.html", mode="editar", anuncio=anuncio)
@@ -407,6 +297,7 @@ def incident_moderar(inc_id):
         flash('Incidencia cerrada y resuelta.', 'success')
     db.session.commit()
     return redirect(url_for('moderation_panel'))
+
 # --- CONEXIÓN DEL BLUEPRINT DE ASIGNATURAS ---
 from routes_subjects import subjects_bp
 app.register_blueprint(subjects_bp)

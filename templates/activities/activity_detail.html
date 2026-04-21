@@ -1,39 +1,85 @@
 {% extends "base.html" %}
 
-{% block title %}{{ anuncio.title }}{% endblock %}
+{% block title %}{{ activity.title }}{% endblock %}
 
 {% block custom_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ads.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/activities.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="ad-detail-wrapper">
-    <h2 class="ad-title">{{ anuncio.title }}</h2>
+<div class="activities-wrapper">
 
-    <div class="ad-meta">
-        <strong>Publicado por:</strong> {{ anuncio.user.name }}<br>
-        <strong>Fecha de publicación:</strong> {{ anuncio.created_at.strftime('%d/%m/%Y') }}<br>
-        <strong>Fecha de caducidad:</strong> {{ anuncio.expires_at.strftime('%d/%m/%Y') }}
-    </div>
+    <a href="{{ url_for('activities.activities_list') }}" class="back-link">← Volver a actividades</a>
 
-    <div class="ad-content">
-        {{ anuncio.content }}
-    </div>
+    <div class="activity-detail-card">
 
-    <div class="ad-actions">
-        <a href="{{ url_for('ads') }}" class="back-link">⬅ Volver al tablón</a>
+        {% if activity.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/activities/' + activity.image_filename) }}" class="activity-detail-img">
+        {% else %}
+            <div class="activity-detail-placeholder">📅</div>
+        {% endif %}
 
-        {% if current_user.is_authenticated and (current_user.role == 'admin' or current_user.id == anuncio.user_id) %}
-            <div style="margin-left: auto; display: flex; gap: 1rem;">
-                <a href="{{ url_for('ad_edit', ad_id=anuncio.id) }}" class="btn-outline">✏️ Editar</a>
-                
-                <form action="{{ url_for('ad_delete', ad_id=anuncio.id) }}" method="post" style="margin: 0;">
-                    <button type="submit" class="btn-danger-outline" onclick="return confirm('¿Seguro que quieres eliminar este anuncio?');">
-                        🗑 Eliminar
+        <div class="activity-detail-content">
+            <h2 class="activity-detail-title">{{ activity.title }}</h2>
+            <p class="activity-detail-desc">{{ activity.description }}</p>
+
+            <div class="activity-info-row">
+                <span>🗓️ {{ activity.date.strftime('%d/%m/%Y a las %H:%M') }}</span>
+                <span>📍 {{ activity.location }}</span>
+                {% if activity.capacity %}
+                    <span>👥 {{ activity.registration_count }}/{{ activity.capacity }} plazas</span>
+                {% else %}
+                    <span>👥 {{ activity.registration_count }} inscritos</span>
+                {% endif %}
+                <span>❤️ {{ activity.likes_count }} likes</span>
+            </div>
+
+            <div class="activity-actions">
+                <form method="post" action="{{ url_for('activities.activity_like', activity_id=activity.id) }}">
+                    <button type="submit" class="btn-create {{ 'btn-like-active' if ya_like else 'btn-like-inactive' }}">
+                        ❤️ {{ 'Ya me gusta' if ya_like else 'Me gusta' }}
                     </button>
                 </form>
+
+                {% if not activity.is_full or ya_inscrito %}
+                <form method="post" action="{{ url_for('activities.activity_register', activity_id=activity.id) }}">
+                    <button type="submit" class="btn-create" style="{{ 'background: #e53935;' if ya_inscrito else '' }}">
+                        {{ '✅ Inscrito (cancelar)' if ya_inscrito else '📋 Inscribirme' }}
+                    </button>
+                </form>
+                {% else %}
+                    <button disabled class="btn-disabled">Aforo completo</button>
+                {% endif %}
+
+                {% if current_user.id == activity.user_id or current_user.role == 'admin' %}
+                <a href="{{ url_for('activities.activity_edit', activity_id=activity.id) }}" class="btn-create" style="background: #1976d2;">✏️ Editar</a>
+                {% endif %}
             </div>
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h3 class="activities-title" style="margin-bottom: 1.5rem;">💬 Comentarios ({{ activity.comments|length }})</h3>
+
+        <form method="post" action="{{ url_for('activities.activity_comment', activity_id=activity.id) }}" style="margin-bottom: 2rem;">
+            <textarea name="content" rows="3" placeholder="Escribe un comentario..." required class="form-control" style="resize: vertical;"></textarea>
+            <button type="submit" class="btn-create">Comentar</button>
+        </form>
+
+        {% if activity.comments %}
+            {% for comment in activity.comments|sort(attribute='created_at', reverse=True) %}
+            <div class="comment-item">
+                <div class="comment-header">
+                    <strong style="color: #2e7d32;">{{ comment.user.name }}</strong>
+                    <span style="color: #999; font-size: 0.8rem;">{{ comment.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                </div>
+                <p style="margin: 0; color: #555;">{{ comment.content }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #999; text-align: center;">No hay comentarios todavía. ¡Sé el primero!</p>
         {% endif %}
     </div>
+
 </div>
 {% endblock %}
