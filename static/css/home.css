@@ -1,0 +1,14 @@
+/* =========================================================
+   ESTILOS DE INICIO (home.css)
+   ========================================================= */
+.home-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.home-feature-list {
+    max-width: 700px;
+    margin: 2rem auto;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}

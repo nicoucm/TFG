@@ -1,39 +1,44 @@
 {% extends "base.html" %}
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/incidents.css') }}">
+{% endblock %}
 
 {% block title %}Portal de Incidencias{% endblock %}
 
 {% block content %}
-<h2><span class="badge-soft">Portal de Incidencias</span></h2>
-<p style="text-align: center; font-size: 1.1rem;">
-    Reporta cualquier problema, conflicto o sugerencia. El equipo de moderación lo revisará lo antes posible.
-</p>
+<div class="text-center">
+    <h2><span class="badge-soft">Portal de Incidencias</span></h2>
+    <p class="home-subtitle">
+        Reporta cualquier problema, conflicto o sugerencia. El equipo de moderación lo revisará lo antes posible.
+    </p>
+</div>
 
-<div style="max-width: 650px; margin: 2rem auto; background: #f9fbf9; padding: 2.5rem; border-radius: 16px; border: 1px solid #c8e6c9; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+<div class="form-container">
     <form method="post">
-        <label for="title" style="font-weight: bold; color: #1b5e20;">Asunto de la incidencia</label><br>
-        <input type="text" id="title" name="title" required placeholder="Ej: Problema con las taquillas del bloque 2" style="width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px;"><br>
+        <label for="title" class="form-label">Asunto de la incidencia</label>
+        <input type="text" id="title" name="title" required placeholder="Ej: Problema con las taquillas del bloque 2" class="form-control">
 
-        <label for="description" style="font-weight: bold; color: #1b5e20;">Descripción detallada</label><br>
-        <textarea id="description" name="description" rows="6" required placeholder="Explica aquí lo sucedido..." style="width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px;"></textarea><br>
+        <label for="description" class="form-label">Descripción detallada</label>
+        <textarea id="description" name="description" rows="6" required placeholder="Explica aquí lo sucedido..." class="form-control"></textarea>
 
-        <div style="margin-bottom: 25px; background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50;">
-            <input type="checkbox" id="anonymous" name="anonymous" value="yes" style="transform: scale(1.2); margin-right: 10px;">
-            <label for="anonymous" style="color: #2e7d32; font-weight: bold; cursor: pointer;">🔒 Enviar de forma anónima</label>
-            <p style="margin: 5px 0 0 28px; font-size: 0.9rem; color: #555;">
+        <div class="info-box anonymous-box">
+            <input type="checkbox" id="anonymous" name="anonymous" value="yes" class="checkbox-large">
+            <label for="anonymous" class="checkbox-label">🔒 Enviar de forma anónima</label>
+            <p class="anonymous-help-text">
                 Si marcas esta casilla, tu correo y nombre <strong>no</strong> se guardarán. Nadie sabrá que fuiste tú, pero tampoco podrás ver el estado de resolución de esta incidencia en tu perfil.
             </p>
         </div>
 
-        <div style="text-align: center;">
+        <div class="text-center">
             <button type="submit" class="btn-create">Enviar Incidencia</button>
         </div>
     </form>
 </div>
 
-<h3 style="margin-top: 4rem; text-align: center; color: #1b5e20;">Mis incidencias reportadas</h3>
+<h3 class="section-title">Mis incidencias reportadas</h3>
 
 {% if incidencias %}
-    <table class="tabla-centrada" cellpadding="10" cellspacing="0" style="width: 100%; max-width: 800px;">
+    <table class="tabla-centrada max-w-800">
         <thead>
             <tr>
                 <th>Asunto</th>
@@ -48,11 +53,11 @@
                 <td>{{ inc.created_at.strftime('%d/%m/%Y') }}</td>
                 <td>
                     {% if inc.status == 'Abierta' %}
-                        <span style="color: #d32f2f; font-weight: bold;">🔴 Abierta</span>
+                        <span class="status-abierta">🔴 Abierta</span>
                     {% elif inc.status == 'En proceso' %}
-                        <span style="color: #f57c00; font-weight: bold;">🟠 En proceso</span>
+                        <span class="status-proceso">🟠 En proceso</span>
                     {% else %}
-                        <span style="color: #388e3c; font-weight: bold;">🟢 Cerrada</span>
+                        <span class="status-cerrada">🟢 Cerrada</span>
                     {% endif %}
                 </td>
             </tr>
@@ -60,7 +65,7 @@
         </tbody>
     </table>
 {% else %}
-    <p style="text-align: center; color: #666; font-style: italic;">
+    <p class="empty-state-text">
         No has reportado ninguna incidencia con tu nombre (las anónimas no se muestran aquí por privacidad).
     </p>
 {% endif %}

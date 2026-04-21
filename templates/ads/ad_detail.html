@@ -2,33 +2,38 @@
 
 {% block title %}{{ anuncio.title }}{% endblock %}
 
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ads.css') }}">
+{% endblock %}
+
 {% block content %}
-<h2>{{ anuncio.title }}</h2>
+<div class="ad-detail-wrapper">
+    <h2 class="ad-title">{{ anuncio.title }}</h2>
 
-<p>
-    <strong>Publicado por:</strong> {{ anuncio.user.name }}<br>
-    <strong>Fecha de publicación:</strong> {{ anuncio.created_at.strftime('%d/%m/%Y') }}<br>
-    <strong>Fecha de caducidad:</strong> {{ anuncio.expires_at.strftime('%d/%m/%Y') }}
-</p>
+    <div class="ad-meta">
+        <strong>Publicado por:</strong> {{ anuncio.user.name }}<br>
+        <strong>Fecha de publicación:</strong> {{ anuncio.created_at.strftime('%d/%m/%Y') }}<br>
+        <strong>Fecha de caducidad:</strong> {{ anuncio.expires_at.strftime('%d/%m/%Y') }}
+    </div>
 
-<hr>
+    <div class="ad-content">
+        {{ anuncio.content }}
+    </div>
 
-<p>{{ anuncio.content }}</p>
+    <div class="ad-actions">
+        <a href="{{ url_for('ads') }}" class="back-link">⬅ Volver al tablón</a>
 
-{% if current_user.is_authenticated and (current_user.role == 'admin' or current_user.id == anuncio.user_id) %}
-    <p style="margin-top: 15px;">
-        <a href="{{ url_for('ad_edit', ad_id=anuncio.id) }}">✏️ Editar</a>
-        |
-        <form action="{{ url_for('ad_delete', ad_id=anuncio.id) }}"
-              method="post" style="display:inline;">
-            <button type="submit" onclick="return confirm('¿Seguro que quieres eliminar este anuncio?');">
-                🗑 Eliminar
-            </button>
-        </form>
-    </p>
-{% endif %}
-
-<p style="margin-top: 15px;">
-    <a href="{{ url_for('ads') }}">⬅ Volver al tablón</a>
-</p>
+        {% if current_user.is_authenticated and (current_user.role == 'admin' or current_user.id == anuncio.user_id) %}
+            <div style="margin-left: auto; display: flex; gap: 1rem;">
+                <a href="{{ url_for('ad_edit', ad_id=anuncio.id) }}" class="btn-outline">✏️ Editar</a>
+                
+                <form action="{{ url_for('ad_delete', ad_id=anuncio.id) }}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-danger-outline" onclick="return confirm('¿Seguro que quieres eliminar este anuncio?');">
+                        🗑 Eliminar
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

@@ -29,6 +29,10 @@ class Announcement(db.Model):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     expires_at = db.Column(db.DateTime, nullable=False)
+    
+    # 👇 AÑADE ESTA LÍNEA DE AQUÍ 👇
+    status = db.Column(db.String(20), nullable=False, default="pendiente")
+    
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     user = db.relationship("User", backref="announcements")
 
@@ -67,6 +71,7 @@ class Review(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=False)
     user = db.relationship("User", backref="reviews_user")
+    status = db.Column(db.String(20), nullable=False, default="pendiente")
 
 class Document(db.Model):
     __tablename__ = "documents"
@@ -78,6 +83,7 @@ class Document(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=False)
     user = db.relationship("User", backref="documents_user")
+    status = db.Column(db.String(20), nullable=False, default="pendiente")
 
 
 # --- MODELOS DE ACTIVIDADES ---

@@ -2,51 +2,54 @@
 
 {% block title %}Tablón de anuncios{% endblock %}
 
-{% block content %}
-<h2>Tablón de anuncios</h2>
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ads.css') }}">
+{% endblock %}
 
-{% if current_user.is_authenticated %}
-    <p>
-        <a href="{{ url_for('ad_create') }}">➕ Crear nuevo anuncio</a>
-    </p>
-{% else %}
-    <p> Debes iniciar sesión con tu cuenta para publicar anuncios.</p>
-{% endif %}
+{% block content %}
+<div class="ads-header">
+    <h2>📢 Tablón de anuncios</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">Encuentra clases particulares, grupos de estudio y más.</p>
+    
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('ad_create') }}" class="btn-create">➕ Crear nuevo anuncio</a>
+    {% else %}
+        <p style="background: #fff3e0; color: #f57c00; padding: 10px; border-radius: 8px; display: inline-block;">
+            ⚠️ Debes iniciar sesión con tu cuenta para publicar anuncios.
+        </p>
+    {% endif %}
+</div>
 
 {% if anuncios %}
-    <table class="tabla-centrada" border="1" cellpadding="8" cellspacing="0">
+    <table class="tabla-centrada">
         <thead>
             <tr>
-                <th>Título</th>
+                <th style="border-top-left-radius: 8px;">Título</th>
                 <th>Autor</th>
-                <th>Fecha publicación</th>
-                <th>Fecha caducidad</th>
-                <th>Acciones</th>
+                <th>Publicación</th>
+                <th>Caducidad</th>
+                <th style="border-top-right-radius: 8px;">Acciones</th>
             </tr>
         </thead>
         <tbody>
         {% for anuncio in anuncios %}
             <tr>
-                <td><a href="{{ url_for('ad_detail', ad_id=anuncio.id) }}">{{ anuncio.title }}</a></td>
+                <td><strong><a href="{{ url_for('ad_detail', ad_id=anuncio.id) }}" style="color: #1b5e20; text-decoration: none;">{{ anuncio.title }}</a></strong></td>
                 <td>{{ anuncio.user.name }}</td>
                 <td>{{ anuncio.created_at.strftime('%d/%m/%Y') }}</td>
                 <td>{{ anuncio.expires_at.strftime('%d/%m/%Y') }}</td>
-                <td>
-                    {% if current_user.is_authenticated and (current_user.role == 'admin' or current_user.id == anuncio.user_id) %}
-                        <a href="{{ url_for('ad_edit', ad_id=anuncio.id) }}">Editar</a> |
-                        <form action="{{ url_for('ad_delete', ad_id=anuncio.id) }}" method="post" style="display:inline;">
-                            <button type="submit" onclick="return confirm('¿Seguro que quieres eliminar este anuncio?');">Eliminar</button>
-                        </form>
-                    {% else %}
-                        -
-                    {% endif %}
+                <td style="text-align: center;">
+                    <a href="{{ url_for('ad_detail', ad_id=anuncio.id) }}" class="btn-outline" style="padding: 4px 8px; font-size: 0.85rem;">Ver completo</a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 {% else %}
-    <p>No hay anuncios activos en este momento.</p>
+    <div class="empty-state-text" style="padding: 3rem;">
+        <p style="font-size: 3rem; margin: 0;">📭</p>
+        <p>No hay anuncios activos en este momento.</p>
+    </div>
 {% endif %}
 
 {% endblock %}

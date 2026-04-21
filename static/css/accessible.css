@@ -1,0 +1,50 @@
+/* =========================================================
+   PANEL DE ACCESIBILIDAD (accessible.css)
+   ========================================================= */
+.accessible-wrapper {
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.accessible-desc {
+    font-size: 1.1em;
+    color: #444;
+    margin-bottom: 30px;
+}
+
+.accessible-panel {
+    background: #f9fbf9;
+    border: 2px solid #c8e6c9;
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+/* Modificadores para el botón principal en esta pantalla */
+.btn-accessible-toggle {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+}
+
+/* Clases dinámicas para controlar el color desde JavaScript */
+.status-text-on {
+    color: #388e3c; /* Verde */
+    font-weight: bold;
+}
+
+.status-text-off {
+    color: #d32f2f; /* Rojo */
+    font-weight: bold;
+}
+
+/* Estado del botón cuando la accesibilidad está activada (Rojo para poder apagarlo) */
+.btn-deactivate {
+    background-color: #d32f2f !important; 
+    color: white !important;
+}
+
+.btn-deactivate:hover {
+    background-color: #b71c1c !important;
+}

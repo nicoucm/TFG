@@ -2,64 +2,51 @@
 
 {% block title %}Proponer Actividad{% endblock %}
 
-{% block content %}
-<div style="max-width: 600px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/activities.css') }}">
+{% endblock %}
 
-    <h2 style="color: #2e7d32; margin-bottom: 0.5rem;">📝 Proponer una actividad</h2>
-    <p style="color: #999; font-size: 0.9rem; margin-bottom: 2rem;">Tu propuesta será revisada por un administrador antes de publicarse.</p>
+{% block content %}
+<div class="form-container" style="max-width: 600px;">
+
+    <h2 class="form-title">📝 Proponer una actividad</h2>
+    <p class="form-subtitle">Tu propuesta será revisada por un administrador antes de publicarse.</p>
 
     <form method="post" enctype="multipart/form-data">
-
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Título *</label>
-            <input type="text" name="title" required placeholder="Ej: Charla sobre IA en la universidad"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+        <div>
+            <label class="form-label">Título *</label>
+            <input type="text" name="title" required placeholder="Ej: Charla sobre IA en la universidad" class="form-control">
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Descripción *</label>
-            <textarea name="description" required rows="4" placeholder="Describe la actividad con detalle..."
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; resize: vertical;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'"></textarea>
+        <div>
+            <label class="form-label">Descripción *</label>
+            <textarea name="description" required rows="4" placeholder="Describe la actividad con detalle..." class="form-control"></textarea>
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Fecha y hora *</label>
-            <input type="datetime-local" name="date" required
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+        <div>
+            <label class="form-label">Fecha y hora *</label>
+            <input type="datetime-local" name="date" required class="form-control">
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Lugar *</label>
-            <input type="text" name="location" required placeholder="Ej: Salón de actos, Facultad de Informática"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+        <div>
+            <label class="form-label">Lugar *</label>
+            <input type="text" name="location" required placeholder="Ej: Salón de actos, Facultad de Informática" class="form-control">
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Aforo máximo <span style="color:#999; font-weight:400;">(opcional)</span></label>
-            <input type="number" name="capacity" min="1" placeholder="Ej: 50"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;"
-                onfocus="this.style.borderColor='#2e7d32'" onblur="this.style.borderColor='#ccc'">
+        <div>
+            <label class="form-label">Aforo máximo <span style="color:#999; font-weight:400;">(opcional)</span></label>
+            <input type="number" name="capacity" min="1" placeholder="Ej: 50" class="form-control">
         </div>
 
-        <div style="margin-bottom: 2rem;">
-            <label style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Imagen o cartel <span style="color:#999; font-weight:400;">(opcional)</span></label>
-            <input type="file" name="image" accept="image/*"
-                style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+        <div>
+            <label class="form-label">Imagen o cartel <span style="color:#999; font-weight:400;">(opcional)</span></label>
+            <input type="file" name="image" accept="image/*" class="form-control">
         </div>
 
-        <div style="display: flex; gap: 1rem;">
-            <button type="submit" class="btn-create" style="flex: 1; padding: 12px; font-size: 1rem;">
-                Enviar propuesta
-            </button>
-            <a href="{{ url_for('activities.activities_list') }}" style="flex: 1; padding: 12px; text-align: center; border: 1px solid #ccc; border-radius: 8px; color: #666; text-decoration: none; font-size: 1rem;">
-                Cancelar
-            </a>
+        <div class="form-actions">
+            <button type="submit" class="btn-create btn-flex">Enviar propuesta</button>
+            <a href="{{ url_for('activities.activities_list') }}" class="btn-cancel">Cancelar</a>
         </div>
-
     </form>
 </div>
 {% endblock %}

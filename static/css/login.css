@@ -1,0 +1,129 @@
+/* =========================================================
+   ESTILOS DE LOGIN (login.css)
+   ========================================================= */
+.login-wrapper {
+    text-align: center;
+    margin: 4rem auto;
+    max-width: 500px;
+}
+
+.login-title {
+    margin-bottom: 0.5rem;
+    color: #2e7d32;
+}
+
+.login-subtitle {
+    color: #666;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+}
+
+/* Botón de Google */
+.btn-google {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #dadce0;
+    color: #3c4043;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-family: 'Open Sans', sans-serif;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+}
+
+.btn-google:hover {
+    background-color: #f8faff;
+    border-color: #c8e6c9;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    color: #2e7d32;
+}
+
+.svg-icon {
+    vertical-align: middle;
+    margin-right: 12px;
+}
+
+.help-text {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* Separador " o " */
+.separator-container {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+}
+
+.separator-line {
+    flex-grow: 1;
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+.separator-text {
+    margin: 0 1rem;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+/* Botones específicos de login */
+.btn-login-admin {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+}
+
+.btn-submit-admin {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+}
+
+/* Formulario de Administrador */
+.admin-form-container {
+    display: none; /* Oculto por defecto, lo muestra el JavaScript */
+    max-width: 400px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.admin-form-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2e7d32;
+}
+
+.login-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: #444;
+    text-align: left;
+}
+
+.login-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border 0.2s;
+}
+
+/* ¡Esto sustituye al código JavaScript onfocus/onblur! */
+.login-input:focus {
+    border-color: #2e7d32;
+    outline: none;
+}
