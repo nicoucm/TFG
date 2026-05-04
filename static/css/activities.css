@@ -234,3 +234,39 @@
     border-color: #999;
     color: #333;
 }
+
+/* =========================================================
+   CORRECCIÓN TARJETAS DE ACTIVIDADES EN MODO ACCESIBLE
+   ========================================================= */
+
+/* 1. Cambiar los fondos blancos a gris oscuro */
+body.tema-accesible .activity-card,
+body.tema-accesible .activity-detail-card,
+body.tema-accesible .comments-section,
+body.tema-accesible .admin-activity-card {
+    background-color: #222222 !important;
+    border: 1px solid #ffcc00 !important;
+    box-shadow: none !important;
+}
+
+/* 2. Forzar que todos los textos interiores sean blancos o claros */
+body.tema-accesible .activity-card-title,
+body.tema-accesible .activity-info,
+body.tema-accesible .activity-detail-title,
+body.tema-accesible .activity-detail-desc,
+body.tema-accesible .activity-info-row,
+body.tema-accesible .comment-header strong,
+body.tema-accesible .comment-header span,
+body.tema-accesible .comment-item p,
+body.tema-accesible .admin-activity-card h3,
+body.tema-accesible .admin-activity-card p {
+    color: #ffffff !important;
+}
+
+/* 3. Asegurar que los inputs y textareas se vean bien al escribir */
+body.tema-accesible textarea.form-control,
+body.tema-accesible input.form-control {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 1px solid #ffcc00 !important;
+}

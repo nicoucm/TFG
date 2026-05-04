@@ -10,7 +10,7 @@
 
     {% if pendientes %}
         {% for activity in pendientes %}
-        <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; display: flex; gap: 1.5rem; align-items: flex-start;">
+        <div class="admin-activity-card" style="background-color: var(--card-bg, #fff); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 1.5rem; margin-bottom: 1.5rem; display: flex; gap: 1.5rem; align-items: flex-start;">
 
             {% if activity.image_filename %}
                 <img src="{{ url_for('static', filename='uploads/activities/' + activity.image_filename) }}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">

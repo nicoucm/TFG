@@ -48,3 +48,39 @@
 .btn-deactivate:hover {
     background-color: #b71c1c !important;
 }
+
+/* =========================================================
+   CORRECCIÓN TARJETAS DE ACTIVIDADES EN MODO ACCESIBLE
+   ========================================================= */
+
+/* 1. Cambiar los fondos blancos a gris oscuro */
+body.dark-mode .activity-card,
+body.dark-mode .activity-detail-card,
+body.dark-mode .comments-section,
+body.dark-mode .admin-activity-card {
+    background-color: #222222 !important;
+    border: 1px solid #ffcc00 !important; /* Borde amarillo para alto contraste */
+    box-shadow: none !important;
+}
+
+/* 2. Forzar que todos los textos interiores sean blancos o claros */
+body.dark-mode .activity-card-title,
+body.dark-mode .activity-info,
+body.dark-mode .activity-detail-title,
+body.dark-mode .activity-detail-desc,
+body.dark-mode .activity-info-row,
+body.dark-mode .comment-header strong,
+body.dark-mode .comment-header span,
+body.dark-mode .comment-item p,
+body.dark-mode .admin-activity-card h3,
+body.dark-mode .admin-activity-card p {
+    color: #ffffff !important;
+}
+
+/* 3. Asegurar que los comentarios se vean bien al escribirlos */
+body.dark-mode textarea.form-control,
+body.dark-mode input.form-control {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 1px solid #ffcc00 !important;
+}
