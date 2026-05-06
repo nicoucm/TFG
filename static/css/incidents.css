@@ -1,45 +1,54 @@
 /* =========================================================
    ESTILOS DE INCIDENCIAS (incidents.css)
    ========================================================= */
+
 .form-container {
-    max-width: 650px;
+    max-width: 700px;
     margin: 2rem auto;
-    background: #f9fbf9;
-    padding: 2.5rem;
+    background: #fff;
+    padding: 3rem;
     border-radius: 16px;
-    border: 1px solid #c8e6c9;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 .form-label {
     font-weight: bold;
     color: #1b5e20;
     display: block;
-    margin-top: 8px;
+    margin-bottom: 0.5rem;
 }
 
 .form-control {
     width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    margin-bottom: 20px;
+    padding: 12px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 8px;
     box-sizing: border-box;
     font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    margin-bottom: 1.5rem;
 }
 
+.form-control:focus {
+    border-color: #2e7d32;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+/* Caja de anonimato */
 .info-box.anonymous-box {
-    margin-bottom: 25px;
+    margin-bottom: 1.5rem;
     background: #e8f5e8;
-    padding: 15px;
+    padding: 1.2rem 1.5rem;
     border-radius: 8px;
     border-left: 5px solid #4caf50;
+    transition: all 0.3s;
 }
 
 .checkbox-large {
     transform: scale(1.2);
-    margin-right: 10px;
+    cursor: pointer;
 }
 
 .checkbox-label {
@@ -49,18 +58,80 @@
 }
 
 .anonymous-help-text {
-    margin: 5px 0 0 28px;
+    margin: 8px 0 0 28px;
     font-size: 0.9rem;
     color: #555;
+    line-height: 1.5;
 }
 
+/* Títulos y estados (Tabla) */
 .section-title {
     margin-top: 4rem;
     text-align: center;
     color: #1b5e20;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
 }
 
-/* Colores de estado (para incidencias, etc) */
-.status-abierta { color: #d32f2f; font-weight: bold; }
-.status-proceso { color: #f57c00; font-weight: bold; }
-.status-cerrada { color: #388e3c; font-weight: bold; }
+/* Etiquetas visuales redondeadas (Pills) para los estados */
+.status-abierta { 
+    color: #d32f2f; 
+    font-weight: bold; 
+    background: #ffebee; 
+    padding: 6px 12px; 
+    border-radius: 50px; 
+    font-size: 0.9rem;
+}
+.status-proceso { 
+    color: #f57c00; 
+    font-weight: bold; 
+    background: #fff3e0; 
+    padding: 6px 12px; 
+    border-radius: 50px; 
+    font-size: 0.9rem;
+}
+.status-cerrada { 
+    color: #388e3c; 
+    font-weight: bold; 
+    background: #e8f5e8; 
+    padding: 6px 12px; 
+    border-radius: 50px; 
+    font-size: 0.9rem;
+}
+
+/* =========================================================
+   CORRECCIÓN MODO ACCESIBLE
+   ========================================================= */
+
+/* 1. Fondos oscuros para los contenedores */
+body.tema-accesible .form-container,
+body.tema-accesible .info-box.anonymous-box {
+    background-color: #222222 !important;
+    border: 1px solid #ffcc00 !important;
+    box-shadow: none !important;
+}
+
+/* 2. Textos en blanco */
+body.tema-accesible .form-label,
+body.tema-accesible .section-title,
+body.tema-accesible .checkbox-label,
+body.tema-accesible .anonymous-help-text {
+    color: #ffffff !important;
+}
+
+/* 3. Estilos de inputs */
+body.tema-accesible textarea.form-control,
+body.tema-accesible input.form-control {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 1px solid #ffcc00 !important;
+}
+
+/* 4. Adaptar los estados de las incidencias al modo oscuro */
+body.tema-accesible .status-abierta,
+body.tema-accesible .status-proceso,
+body.tema-accesible .status-cerrada {
+    background-color: #000000 !important;
+    border: 1px solid #ffcc00 !important;
+    color: #ffffff !important;
+}

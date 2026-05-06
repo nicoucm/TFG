@@ -193,7 +193,39 @@
     margin-bottom: 0.5rem;
 }
 
-/* --- FORMULARIOS CREAR/EDITAR --- */
+.comment-form-container {
+    background: #f9fbf9;
+    border: 1px solid #c8e6c9;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.comment-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s;
+    margin-bottom: 10px;
+}
+
+.comment-textarea:focus {
+    border-color: #2e7d32;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.btn-comment {
+    width: 100%;
+}
+
+/* --- FORMULARIO CREAR/EDITAR ACTIVIDADES --- */
 .form-title {
     color: #2e7d32;
     margin-bottom: 0.5rem;
@@ -203,6 +235,31 @@
     color: #999;
     font-size: 0.9rem;
     margin-bottom: 2rem;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #1b5e20;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    margin-bottom: 1.5rem; /* Separación automática entre campos */
+}
+
+.form-control:focus {
+    border-color: #2e7d32;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
 }
 
 .form-actions {
@@ -221,7 +278,7 @@
     padding: 12px;
     text-align: center;
     border: 1px solid #ccc;
-    border-radius: 50px; /* Igualamos al estilo de pastilla global */
+    border-radius: 50px;
     color: #666;
     text-decoration: none;
     font-size: 1rem;
@@ -243,7 +300,8 @@
 body.tema-accesible .activity-card,
 body.tema-accesible .activity-detail-card,
 body.tema-accesible .comments-section,
-body.tema-accesible .admin-activity-card {
+body.tema-accesible .admin-activity-card,
+body.tema-accesible .comment-form-container {
     background-color: #222222 !important;
     border: 1px solid #ffcc00 !important;
     box-shadow: none !important;
@@ -259,13 +317,18 @@ body.tema-accesible .comment-header strong,
 body.tema-accesible .comment-header span,
 body.tema-accesible .comment-item p,
 body.tema-accesible .admin-activity-card h3,
-body.tema-accesible .admin-activity-card p {
+body.tema-accesible .admin-activity-card p,
+body.tema-accesible .form-label,
+body.tema-accesible .form-title,
+body.tema-accesible .form-subtitle {
     color: #ffffff !important;
 }
 
 /* 3. Asegurar que los inputs y textareas se vean bien al escribir */
 body.tema-accesible textarea.form-control,
-body.tema-accesible input.form-control {
+body.tema-accesible input.form-control,
+body.tema-accesible select.form-control,
+body.tema-accesible .comment-textarea {
     background-color: #333333 !important;
     color: #ffffff !important;
     border: 1px solid #ffcc00 !important;

@@ -61,10 +61,13 @@
     <div class="comments-section">
         <h3 class="activities-title" style="margin-bottom: 1.5rem;">💬 Comentarios ({{ activity.comments|length }})</h3>
 
-        <form method="post" action="{{ url_for('activities.activity_comment', activity_id=activity.id) }}" style="margin-bottom: 2rem;">
-            <textarea name="content" rows="3" placeholder="Escribe un comentario..." required class="form-control" style="resize: vertical;"></textarea>
-            <button type="submit" class="btn-create">Comentar</button>
-        </form>
+        <!-- AQUI ESTÁ EL NUEVO FORMULARIO DE COMENTARIOS REDISEÑADO -->
+        <div class="comment-form-container">
+            <form method="post" action="{{ url_for('activities.activity_comment', activity_id=activity.id) }}">
+                <textarea name="content" rows="3" placeholder="¿Qué opinas de esta actividad? Escribe tu comentario aquí..." required class="form-control comment-textarea"></textarea>
+                <button type="submit" class="btn-create btn-comment">📝 Publicar comentario</button>
+            </form>
+        </div>
 
         {% if activity.comments %}
             {% for comment in activity.comments|sort(attribute='created_at', reverse=True) %}

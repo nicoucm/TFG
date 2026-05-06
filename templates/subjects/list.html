@@ -7,38 +7,40 @@
 
 {% block content %}
 <div class="subject-header">
-    <h2><span class="badge-soft">Grado en Informática UCM</span></h2>
-    <p style="color: #444; margin-top: 10px;">Selecciona una asignatura para ver criterios, apuntes y reseñas de compañeros.</p>
+    <h2><span class="badge-soft" style="font-size: 1.8rem; padding: 0.5rem 1.5rem;">Grado en Informática UCM</span></h2>
+    <p style="color: #666; font-size: 1.1rem; margin-top: 15px;">Selecciona una asignatura para ver criterios, apuntes y reseñas de compañeros.</p>
 </div>
 
 {% for year, subjects in subjects_by_year.items() %}
     <div class="year-container">
-        <h3 class="year-title">{{ year }}º Curso</h3>
+        <h3 class="year-title" style="font-size: 1.5rem; margin-bottom: 1rem;">📚 {{ year }}º Curso</h3>
         
-        <table class="tabla-centrada">
-            <thead>
-                <tr>
-                    <th style="border-top-left-radius: 8px;">Asignatura</th>
-                    <th style="text-align: center;">Dificultad (1-5)</th>
-                    <th style="text-align: center; border-top-right-radius: 8px;">Acceso</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for subject in subjects %}
-                <tr>
-                    <td class="subject-name">{{ subject.name }}</td>
-                    <td style="text-align: center; color: #444;">⭐ {{ subject.average_difficulty }}</td>
-                    <td style="text-align: center;">
-                        <a href="{{ url_for('subjects.subject_detail', subject_id=subject.id) }}" class="btn-create" style="display: inline-block;">Ver Recursos</a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="3" class="empty-state-text">Aún no hay asignaturas registradas para este curso.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-wrapper" style="box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 12px; overflow: hidden; background: #fff;">
+            <table class="tabla-centrada" style="width: 100%; border: none;">
+                <thead>
+                    <tr style="background-color: #e8f5e8;">
+                        <th style="border: none; padding: 15px; text-align: left; color: #1b5e20;">Asignatura</th>
+                        <th style="border: none; text-align: center; color: #1b5e20;">Dificultad (1-5)</th>
+                        <th style="border: none; text-align: center; color: #1b5e20;">Acceso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subjects %}
+                    <tr style="border-top: 1px solid #f0f0f0;">
+                        <td class="subject-name" style="border: none; padding: 15px;">{{ subject.name }}</td>
+                        <td style="text-align: center; color: #666; border: none; font-weight: bold;">⭐ {{ subject.average_difficulty }}</td>
+                        <td style="text-align: center; border: none; padding: 10px;">
+                            <a href="{{ url_for('subjects.subject_detail', subject_id=subject.id) }}" class="btn-create" style="display: inline-block; padding: 8px 20px; font-size: 0.9rem;">Ver Recursos</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="empty-state-text" style="text-align: center; padding: 2rem; color: #999;">Aún no hay asignaturas registradas para este curso.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endfor %}
 {% endblock %}

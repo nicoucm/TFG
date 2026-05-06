@@ -9,32 +9,36 @@
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <h2 style="color: #2e7d32; margin-bottom: 1.5rem; text-align: center;">
+<div class="form-container" style="max-width: 700px; margin: 2rem auto; padding: 3rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+    
+    <h2 class="form-title" style="text-align: center; font-size: 2.2rem; margin-bottom: 0.5rem; color: #2e7d32;">
         {% if mode == 'editar' %}✏️ Editar anuncio{% else %}📝 Nuevo anuncio{% endif %}
     </h2>
+    <p class="form-subtitle" style="text-align: center; margin-bottom: 2.5rem; color: #999;">
+        Rellena los campos a continuación para publicar tu anuncio en el tablón.
+    </p>
 
     <form method="post">
         <div>
-            <label for="title" class="form-label">Título</label>
-            <input type="text" id="title" name="title" value="{{ anuncio.title if anuncio is defined else '' }}" required class="form-control">
+            <label for="title" class="form-label">Título *</label>
+            <input type="text" id="title" name="title" value="{{ anuncio.title if anuncio is defined else '' }}" required placeholder="Ej: Busco compañeros para grupo de estudio de Álgebra" class="form-control">
         </div>
 
         <div>
-            <label for="content" class="form-label">Contenido</label>
-            <textarea id="content" name="content" rows="5" required class="form-control">{{ anuncio.content if anuncio is defined else '' }}</textarea>
+            <label for="content" class="form-label">Contenido *</label>
+            <textarea id="content" name="content" rows="6" required placeholder="Describe los detalles de tu anuncio..." class="form-control" style="resize: vertical;">{{ anuncio.content if anuncio is defined else '' }}</textarea>
         </div>
 
         <div>
-            <label for="expires_at" class="form-label">Fecha de caducidad</label>
+            <label for="expires_at" class="form-label">Fecha de caducidad *</label>
             <input type="date" id="expires_at" name="expires_at" value="{% if anuncio is defined %}{{ anuncio.expires_at.strftime('%Y-%m-%d') }}{% endif %}" required class="form-control">
         </div>
 
-        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-            <button type="submit" class="btn-create" style="flex: 1;">
-                {% if mode == 'editar' %}Guardar cambios{% else %}Crear anuncio{% endif %}
+        <div class="form-actions" style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn-create" style="flex: 1; font-size: 1.1rem; padding: 12px; border-radius: 50px;">
+                {% if mode == 'editar' %}💾 Guardar cambios{% else %}🚀 Publicar anuncio{% endif %}
             </button>
-            <a href="{{ url_for('ads') }}" class="btn-outline" style="text-align: center; display: flex; align-items: center; justify-content: center; flex: 1;">
+            <a href="{{ url_for('ads') }}" class="btn-cancel" style="flex: 1; text-align: center; padding: 12px; border: 1px solid #ccc; border-radius: 50px; color: #666; text-decoration: none; font-weight: bold; transition: all 0.3s; font-size: 1.1rem;">
                 Cancelar
             </a>
         </div>

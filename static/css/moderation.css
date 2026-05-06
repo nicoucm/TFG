@@ -24,6 +24,11 @@
     font-weight: bold; 
     color: #555; 
     font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    background: #e0e0e0;
 }
 
 .tab-btn.active { 
@@ -45,4 +50,56 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
     padding: 1.5rem; 
     margin-bottom: 1.5rem; 
+}
+
+/* =========================================================
+   CORRECCIÓN MODO ACCESIBLE (ALTO CONTRASTE)
+   ========================================================= */
+
+/* 1. Fondo oscuro para las tarjetas y bordes de alto contraste */
+body.tema-accesible .card-mod {
+    background-color: #222222 !important;
+    border: 2px solid #ffeb3b !important; /* Borde amarillo brillante */
+    box-shadow: none !important;
+}
+
+/* 2. Forzar todos los textos internos a blanco para sobreescribir los estilos en línea */
+body.tema-accesible .card-mod h3,
+body.tema-accesible .card-mod p,
+body.tema-accesible .card-mod span,
+body.tema-accesible .card-mod strong,
+body.tema-accesible .card-mod a {
+    color: #ffffff !important;
+}
+
+/* 3. Arreglar los fondos grises que tenías puestos en el HTML (ej. caja de descripción en incidencias) */
+body.tema-accesible .card-mod p[style*="background"] {
+    background-color: #333333 !important;
+    border: 1px solid #ffeb3b !important;
+}
+
+/* 4. Asegurar que las "píldoras" de estado tengan fondo oscuro en lugar de tonos pastel */
+body.tema-accesible .card-mod span[style*="background"] {
+    background-color: #000000 !important;
+    border: 1px solid #ffffff !important;
+}
+
+/* 5. Adaptar el sistema de pestañas (tabs) al modo oscuro */
+body.tema-accesible .tab-buttons {
+    border-bottom: 2px solid #ffeb3b !important;
+}
+
+body.tema-accesible .tab-btn {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 2px solid transparent !important;
+}
+
+/* Pestaña seleccionada en alto contraste */
+body.tema-accesible .tab-btn.active {
+    background-color: #222222 !important;
+    color: #ffeb3b !important;
+    border: 2px solid #ffeb3b !important;
+    border-bottom: 2px solid #222222 !important; /* Corta la línea horizontal para indicar que es una pestaña abierta */
+    margin-bottom: -2px; 
 }

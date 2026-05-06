@@ -5,7 +5,7 @@
 /* --- Cabeceras --- */
 .subject-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 3rem;
 }
 
 .subject-difficulty {
@@ -13,17 +13,31 @@
     margin-top: 10px;
 }
 
+/* Tarjetas base para las secciones */
+.subject-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .subject-section-title {
-    border-bottom: 2px solid #2e7d32;
-    padding-bottom: 8px;
-    margin-bottom: 15px;
+    border-bottom: 2px solid #e8f5e8;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
     color: #1b5e20;
+    font-size: 1.4rem;
 }
 
 .subject-eval-text {
-    color: #444;
+    color: #555;
     margin-top: 15px;
-    line-height: 1.6;
+    line-height: 1.7;
+    font-size: 1.05rem;
 }
 
 /* --- Listado de Cursos (subjects.list.html) --- */
@@ -45,25 +59,32 @@
 
 /* --- Reseñas --- */
 .review-card {
-    background: white;
+    background: #fff;
     border: 1px solid #e8f5e8;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 12px;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
 .review-author {
     color: #1b5e20;
+    font-size: 1.05rem;
 }
 
 .review-score {
     color: #2e7d32;
+    font-weight: bold;
+    background: #e8f5e8;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.9rem;
 }
 
 .review-text {
-    margin: 8px 0;
+    margin: 12px 0;
     color: #444;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .review-date {
@@ -71,9 +92,73 @@
     font-size: 0.85rem;
 }
 
-/* --- Formularios internos (Subir apunte y reseña) --- */
-.subject-form-divider {
-    margin-top: 25px;
-    border-top: 1px dashed #c8e6c9;
-    padding-top: 20px;
+
+/* =========================================================
+   FORMULARIO DE APUNTES Y RESEÑAS
+   ========================================================= */
+.review-form-container {
+    background: #f9fbf9;
+    border: 1px solid #c8e6c9;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-top: 2rem;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #1b5e20;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s;
+    margin-bottom: 1.5rem;
+}
+
+.form-control:focus {
+    border-color: #2e7d32;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+select.form-control {
+    cursor: pointer;
+    background-color: white;
+}
+
+/* =========================================================
+   CORRECCIÓN TARJETAS EN MODO ACCESIBLE
+   ========================================================= */
+
+body.tema-accesible .subject-card,
+body.tema-accesible .review-card,
+body.tema-accesible .review-form-container {
+    background-color: #222222 !important;
+    border: 1px solid #ffcc00 !important;
+    box-shadow: none !important;
+}
+
+body.tema-accesible .subject-section-title,
+body.tema-accesible .subject-eval-text,
+body.tema-accesible .review-author,
+body.tema-accesible .review-text,
+body.tema-accesible .form-label {
+    color: #ffffff !important;
+}
+
+body.tema-accesible textarea.form-control,
+body.tema-accesible input.form-control,
+body.tema-accesible select.form-control {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 1px solid #ffcc00 !important;
 }

@@ -86,3 +86,65 @@
     background: #d32f2f;
     color: #fff;
 }
+
+/* --- FORMULARIOS CREAR/EDITAR ANUNCIOS --- */
+.form-label {
+    font-weight: bold;
+    color: #1b5e20;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    margin-bottom: 1.5rem; /* Separación automática entre campos */
+}
+
+.form-control:focus {
+    border-color: #2e7d32;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.btn-cancel:hover {
+    background: #f5f5f5;
+    border-color: #999;
+    color: #333;
+}
+
+/* =========================================================
+   CORRECCIÓN TARJETAS EN MODO ACCESIBLE
+   ========================================================= */
+
+/* 1. Cambiar los fondos blancos a gris oscuro */
+body.tema-accesible .ad-detail-wrapper,
+body.tema-accesible .form-container {
+    background-color: #222222 !important;
+    border: 1px solid #ffcc00 !important;
+    box-shadow: none !important;
+}
+
+/* 2. Forzar que todos los textos interiores sean blancos o claros */
+body.tema-accesible .ad-title,
+body.tema-accesible .ad-meta,
+body.tema-accesible .ad-content,
+body.tema-accesible .form-label,
+body.tema-accesible .form-title,
+body.tema-accesible .form-subtitle {
+    color: #ffffff !important;
+}
+
+/* 3. Asegurar que los inputs y textareas se vean bien al escribir */
+body.tema-accesible textarea.form-control,
+body.tema-accesible input.form-control {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 1px solid #ffcc00 !important;
+}

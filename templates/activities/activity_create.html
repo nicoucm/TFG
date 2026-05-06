@@ -7,10 +7,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="form-container" style="max-width: 600px;">
+<div class="form-container" style="max-width: 700px; margin: 2rem auto; padding: 3rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
 
-    <h2 class="form-title">📝 Proponer una actividad</h2>
-    <p class="form-subtitle">Tu propuesta será revisada por un administrador antes de publicarse.</p>
+    <h2 class="form-title" style="text-align: center; font-size: 2.2rem; margin-bottom: 0.5rem;">📝 Proponer una actividad</h2>
+    <p class="form-subtitle" style="text-align: center; margin-bottom: 2.5rem;">Tu propuesta será revisada por un administrador antes de publicarse.</p>
 
     <form method="post" enctype="multipart/form-data">
         <div>
@@ -20,7 +20,7 @@
 
         <div>
             <label class="form-label">Descripción *</label>
-            <textarea name="description" required rows="4" placeholder="Describe la actividad con detalle..." class="form-control"></textarea>
+            <textarea name="description" required rows="5" placeholder="Describe la actividad con detalle..." class="form-control" style="resize: vertical;"></textarea>
         </div>
 
         <div>
@@ -28,32 +28,42 @@
             <input type="datetime-local" name="date" required class="form-control">
         </div>
 
-
+        <!-- NUEVO SELECTOR DE UBICACIONES CON AFORO AUTOMÁTICO -->
         <div>
             <label class="form-label">Lugar *</label>
-            <input type="text" name="location" required placeholder="Ej: Salón de actos, Facultad de Informática" class="form-control">
+            <select name="location" required class="form-control" onchange="actualizarAforo(this)" style="cursor: pointer;">
+                <option value="" disabled selected>Selecciona una ubicación...</option>
+                <option value="Salón de Actos" data-aforo="400">Salón de Actos</option>
+                <option value="Biblioteca" data-aforo="100">Biblioteca</option>
+                <option value="Cafetería" data-aforo="75">Cafetería</option>
+                <option value="Aula" data-aforo="80">Aula</option>
+                <option value="Laboratorio" data-aforo="35">Laboratorio</option>
+            </select>
         </div>
 
         <div>
-            <label class="form-label">Aforo máximo <span style="color:#999; font-weight:400;">(opcional)</span></label>
-            <input type="number" name="capacity" min="1" placeholder="Ej: 50" class="form-control">
+            <label class="form-label">Aforo máximo</label>
+            <!-- Añadido id="capacity" y readonly para que el usuario no pueda falsear el aforo del local -->
+            <input type="number" name="capacity" id="capacity" class="form-control" readonly placeholder="Se asignará automáticamente al elegir el lugar" style="background-color: #f5f5f5; color: #555; font-weight: bold;">
         </div>
 
         <div>
             <label class="form-label">Imagen o cartel <span style="color:#999; font-weight:400;">(opcional)</span></label>
-            <input type="file" name="image" accept="image/*" class="form-control">
+            <input type="file" name="image" accept="image/*" class="form-control" style="padding: 9px;">
         </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-create btn-flex">Enviar propuesta</button>
-            <a href="{{ url_for('activities.activities_list') }}" class="btn-cancel">Cancelar</a>
+        <div class="form-actions" style="margin-top: 2rem;">
+            <button type="submit" class="btn-create btn-flex" style="font-size: 1.1rem;">🚀 Enviar propuesta</button>
+            <a href="{{ url_for('activities.activities_list') }}" class="btn-cancel" style="font-size: 1.1rem;">Cancelar</a>
         </div>
     </form>
 </div>
 
 <script>
     function actualizarAforo(select) {
+        // Obtenemos el aforo del data-attribute de la opción seleccionada
         const aforo = select.options[select.selectedIndex].getAttribute('data-aforo');
+        // Inyectamos el número en el campo de aforo (gracias a que ahora sí tiene id="capacity")
         document.getElementById('capacity').value = aforo || '';
     }
 </script>
