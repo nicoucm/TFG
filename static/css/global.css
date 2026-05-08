@@ -303,3 +303,60 @@ body.tema-accesible *:focus {
     outline: 4px solid #ffeb3b !important;
     outline-offset: 4px !important;
 }
+
+/* =========================================================
+   DISEÑO RESPONSIVO (MÓVILES Y TABLETS)
+   ========================================================= */
+@media (max-width: 768px) {
+    /* 1. Ajustar la Cabecera */
+    .header-content {
+        flex-direction: column; /* Apila el título y el logo en vertical */
+        text-align: center;
+        height: auto; /* Quitamos la altura fija */
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
+    }
+
+    header h1 {
+        font-size: 2.2rem; /* Letra más pequeña para el móvil */
+        line-height: 1.2;
+    }
+
+    .header-logo {
+        height: auto;
+        max-width: 90%;
+        max-height: 100px;
+        border-width: 2px;
+    }
+
+    /* 2. Ajustar el Menú de Navegación */
+    .main-nav {
+        padding: 1rem 0 2rem 0;
+    }
+
+    .nav-links {
+        flex-direction: column; /* Menú en vertical */
+        gap: 0.8rem;
+    }
+
+    .nav-links a {
+        display: block;
+        width: 80%;
+        margin: 0 auto;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1); /* Ligero fondo para que parezcan botones */
+    }
+
+    .auth-links {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 1.5rem;
+    }
+
+    /* 3. Ajustar el Contenedor Principal (Tarjeta blanca) */
+    main {
+        margin: 1rem; /* Menos margen exterior */
+        padding: 2rem 1.5rem; /* Menos relleno interior para aprovechar el espacio */
+        border-radius: 12px;
+    }
+}

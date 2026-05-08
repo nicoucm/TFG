@@ -333,3 +333,43 @@ body.tema-accesible .comment-textarea {
     color: #ffffff !important;
     border: 1px solid #ffcc00 !important;
 }
+
+
+/* =========================================================
+   DISEÑO RESPONSIVO (MÓVILES) - SECCIÓN ACTIVIDADES
+   ========================================================= */
+@media (max-width: 768px) {
+    /* 1. Arreglar la cabecera para que el botón no pise al título */
+    .activities-header {
+        flex-direction: column; /* Apila el título y el botón en vertical */
+        gap: 1rem; /* Añade separación entre ellos */
+        text-align: center;
+    }
+
+    .activities-title {
+        font-size: 2rem; /* Reduce un poco el tamaño del título */
+    }
+
+    /* El botón ocupará casi todo el ancho para que sea fácil de pulsar */
+    .activities-header .btn-create {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    /* 2. Arreglar el contenedor del formulario de crear actividad */
+    .form-container {
+        padding: 1.5rem !important; /* Reduce el relleno interior en móviles */
+        margin: 1rem !important; /* Reduce el margen exterior */
+    }
+
+    /* 3. Arreglar los botones de Guardar/Cancelar en formularios */
+    .form-actions {
+        flex-direction: column; /* Apila los botones en vertical */
+        gap: 0.8rem;
+    }
+
+    .btn-flex, .btn-cancel {
+        width: 100%; /* Botones a ancho completo en móvil */
+    }
+}

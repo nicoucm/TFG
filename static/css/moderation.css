@@ -103,3 +103,63 @@ body.tema-accesible .tab-btn.active {
     border-bottom: 2px solid #222222 !important; /* Corta la línea horizontal para indicar que es una pestaña abierta */
     margin-bottom: -2px; 
 }
+
+/* =========================================================
+   DISEÑO RESPONSIVO (MÓVILES) - PANEL DE MODERACIÓN
+   ========================================================= */
+@media (max-width: 768px) {
+    /* 1. Convertir las pestañas en un menú deslizable horizontalmente */
+    .tab-buttons {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 2px;
+    }
+
+    .tab-btn {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .tab-buttons::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* 2. Arreglar el interior de las tarjetas (imágenes y texto) */
+    /* Obligamos a que los elementos que estaban en fila pasen a columna */
+    .card-mod[style*="flex"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    /* Hacemos que la imagen (o el icono del calendario) ocupe todo el ancho */
+    .card-mod img, 
+    .card-mod div[style*="linear-gradient"] {
+        width: 100% !important;
+        height: 150px !important;
+        margin-bottom: 1rem;
+    }
+
+    /* 3. Arreglar los botones de Aprobar/Rechazar */
+    /* Los apilamos verticalmente para que no se pisen */
+    .card-mod div[style*="display: flex"] {
+        flex-direction: column !important;
+        gap: 0.8rem !important;
+    }
+
+    /* Forzamos a que el formulario y el botón ocupen el 100% del ancho */
+    .card-mod form {
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    .card-mod .btn-create {
+        width: 100% !important;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}

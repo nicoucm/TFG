@@ -148,3 +148,31 @@ body.tema-accesible input.form-control {
     color: #ffffff !important;
     border: 1px solid #ffcc00 !important;
 }
+
+/* =========================================================
+   DISEÑO RESPONSIVO (MÓVILES) - TABLÓN DE ANUNCIOS
+   ========================================================= */
+@media (max-width: 768px) {
+    /* 1. Botón de crear anuncio a ancho completo */
+    .ads-header .btn-create {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    /* 2. Truco para que la tabla no rompa la pantalla (Scroll horizontal) */
+    .tabla-centrada {
+        display: block;
+        width: 100%;
+        overflow-x: auto; /* Permite deslizar hacia los lados */
+        -webkit-overflow-scrolling: touch; /* Hace que el deslizamiento sea suave en móviles */
+        white-space: nowrap; /* PROHÍBE que el texto se aplaste hacia abajo */
+    }
+
+    .tabla-centrada th, 
+    .tabla-centrada td {
+        padding: 12px 15px; /* Ajustamos el relleno para que respire más */
+    }
+}
