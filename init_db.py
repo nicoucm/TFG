@@ -8,18 +8,20 @@ def initialize_database():
         # Crea las tablas si no existen
         db.create_all()
 
-        # --- Crear administradores si no existen ---
+        # --- Asegurar administradores (crea o actualiza contrasena) ---
         admins = {
             "alvago29@ucm.es": "Alvaro",
             "nilope03@ucm.es": "Nicolas",
             "guilgo08@ucm.es": "Guillermo",
         }
         for email, name in admins.items():
-            if not User.query.filter_by(email=email).first():
+            u = User.query.filter_by(email=email).first()
+            if not u:
                 u = User(email=email, name=name, role="admin")
-                u.set_password("admin1234")
                 db.session.add(u)
-                print("Admin creado:", email)
+            u.role = "admin"
+            u.set_password("admin1234")
+            print("Admin asegurado:", email)
         db.session.commit()
         
         # Comprobamos si ya hay asignaturas
