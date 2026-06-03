@@ -1,12 +1,26 @@
 import os
 from app import app
-from models import db, Subject
+from models import db, Subject, User
 
 def initialize_database():
     # MAGIA: Esto soluciona tu error RuntimeError, le dice a SQLAlchemy qué app usar
     with app.app_context():
         # Crea las tablas si no existen
         db.create_all()
+
+        # --- Crear administradores si no existen ---
+        admins = {
+            "alvago29@ucm.es": "Alvaro",
+            "nilope03@ucm.es": "Nicolas",
+            "guilgo08@ucm.es": "Guillermo",
+        }
+        for email, name in admins.items():
+            if not User.query.filter_by(email=email).first():
+                u = User(email=email, name=name, role="admin")
+                u.set_password("admin1234")
+                db.session.add(u)
+                print("Admin creado:", email)
+        db.session.commit()
         
         # Comprobamos si ya hay asignaturas
         if Subject.query.count() == 0:

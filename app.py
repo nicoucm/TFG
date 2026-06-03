@@ -88,6 +88,12 @@ def callback():
         email = id_info.get("email")
         name = id_info.get("name")
 
+        # --- FILTRO DE DOMINIO INSTITUCIONAL ---
+        # Solo se permite el acceso con cuentas @ucm.es (coherente con la memoria).
+        if not email or not email.lower().endswith("@ucm.es"):
+            flash("Acceso restringido a cuentas institucionales (@ucm.es).", "error")
+            return redirect(url_for("login"))
+
         user = User.query.filter_by(email=email).first()
         if not user:
             user = User(email=email, name=name, role="estudiante")
