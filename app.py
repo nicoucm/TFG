@@ -14,6 +14,7 @@ from google.auth.transport import requests as google_requests
 
 # IMPORTAMOS LA BASE DE DATOS Y LOS MODELOS DESDE EL NUEVO ARCHIVO
 from models import db, User, Announcement, Incident, Activity, Document, Review
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "super-secreto-tfg"
 
@@ -108,11 +109,7 @@ def callback():
         flash(f"Error en el inicio de sesión con Google: {str(e)}", "error")
         return redirect(url_for("login"))
 
-# --- RESTO DE RUTAS ---
-@app.route("/")
-def home():
-    return render_template("home.html")
-
+# --- RUTAS DE LOGIN LOCAL ---
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -128,12 +125,33 @@ def login():
     
     return render_template("login.html")
 
+@app.route("/login_admin_local", methods=["POST"])
+def login_admin_local():
+    email_form = request.form.get("email").strip().lower()
+    password_form = request.form.get("password")
+
+    user = User.query.filter_by(email=email_form).first()
+
+    # Comprobamos que el usuario existe, es admin y la contraseña coincide
+    if user and user.role == 'admin' and user.check_password(password_form):
+        login_user(user)
+        flash(f"¡Bienvenido/a al panel de administración, {user.name}!", "success")
+        return redirect(url_for("moderation_panel"))
+    else:
+        flash("Credenciales incorrectas o no tienes permisos de administrador.", "error")
+        return redirect(url_for("login"))
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     flash("Has cerrado sesión.", "info")
     return redirect(url_for("home"))
+
+# --- RESTO DE RUTAS ---
+@app.route("/")
+def home():
+    return render_template("home.html")
 
 @app.route("/incidencias", methods=["GET", "POST"])
 @login_required
@@ -153,7 +171,6 @@ def incidents():
         
     mis_incidencias = Incident.query.filter_by(user_id=current_user.id).order_by(Incident.created_at.desc()).all()
     return render_template("incidents.html", incidencias=mis_incidencias)
-
 
 @app.route("/accesible")
 def accessible_mode():
@@ -241,7 +258,6 @@ def moderation_panel():
                            resenas=pendientes_reviews,
                            incidencias=incidencias_abiertas)
 
-
 # --- RUTAS DE ACCIÓN DEL PANEL DE MODERACIÓN ---
 
 @app.route("/anuncios/<int:ad_id>/moderar", methods=["POST"])
@@ -313,6 +329,9 @@ from routes_activities import activities_bp
 app.register_blueprint(activities_bp)
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
+    # Importamos y ejecutamos la inicialización antes de arrancar
+    from init_db import initialize_database
+    print("Iniciando comprobación de la base de datos...")
+    initialize_database()
+    
     app.run(debug=True)
